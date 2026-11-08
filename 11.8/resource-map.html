@@ -1,0 +1,652 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>缙云山自然教育资源地图 · 更新版V4</title>
+<style>
+:root{--bg:#f4f7f2;--panel:#fff;--ink:#1c2b24;--muted:#6d7c73;--green:#246b4a;--line:#dce5dd;--accent:#d9f0df}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,"Microsoft YaHei",system-ui,sans-serif;color:var(--ink)}
+header{height:72px;background:#173c2b;color:white;display:flex;align-items:center;justify-content:space-between;padding:0 24px;gap:16px}
+.brand{display:flex;align-items:center;gap:12px}.brandmark{width:38px;height:38px;border-radius:12px;background:#d5f0dd;color:#17452e;display:grid;place-items:center;font-size:21px}
+h1{font-size:18px;margin:0;font-weight:700}.subhead{font-size:12px;color:#c4d9cb;margin-top:4px}.topnote{font-size:12px;color:#d0e3d5}
+main{display:grid;grid-template-columns:340px minmax(0,1fr);height:calc(100vh - 72px);min-height:620px}
+aside{overflow:auto;padding:18px;border-right:1px solid var(--line);background:#f8faf7}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px;box-shadow:0 3px 14px #163b2910}
+.eyebrow{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--green);font-weight:800}
+.hero h2{font-size:22px;line-height:1.25;margin:8px 0}.hero p{font-size:13px;color:var(--muted);line-height:1.6;margin:8px 0 0}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:16px}.stat{padding:11px;background:#f2f7f2;border-radius:12px}.stat strong{font-size:19px;display:block}.stat span{font-size:11px;color:var(--muted)}
+.actions{display:flex;gap:8px;margin-top:14px}.btn{border:0;border-radius:10px;padding:10px 12px;font-weight:700;font-size:12px;cursor:pointer}.primary{background:var(--green);color:white}.secondary{background:#edf3ee;color:#264a35}.btn:disabled{opacity:.5;cursor:not-allowed}
+.sectionhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}.sectionhead h3{margin:0;font-size:14px}.sectionhead span{font-size:11px;color:var(--muted)}
+.stop{display:flex;gap:10px;padding:11px 0;border-top:1px solid #edf1ed;cursor:pointer}.stop:first-of-type{border-top:0}.num{width:28px;height:28px;flex:0 0 28px;border-radius:50%;display:grid;place-items:center;background:#e1f1e5;color:#246b4a;font-size:12px;font-weight:800}.stop.active .num{background:var(--green);color:#fff}.stop b{font-size:12px;display:block;margin:1px 0 4px}.stop small{font-size:11px;color:var(--muted);line-height:1.4}.stop .jump{margin-left:auto;color:#8b9a8f;font-size:17px}
+.guidebox{background:#f0f7f0;border-radius:12px;padding:13px;font-size:12px;line-height:1.65;color:#365141}.guidebox strong{display:block;color:#1c4b32;margin-bottom:4px}
+#map{height:100%;width:100%;background:#e8eee8}.mapwrap{position:relative;min-width:0}.maptools{position:absolute;z-index:500;top:14px;left:14px;display:flex;gap:7px;flex-wrap:wrap}.maptools button{border:1px solid #dbe5dd;background:#fff;color:#254735;border-radius:10px;padding:9px 12px;font-size:12px;font-weight:700;box-shadow:0 2px 10px #1d39221a;cursor:pointer}
+.legend{position:absolute;z-index:500;bottom:20px;right:16px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:11px;box-shadow:0 3px 12px #1d39221a}.legend div{display:flex;align-items:center;gap:8px;margin:4px 0}.dot{width:10px;height:10px;border-radius:50%;background:#246b4a;border:2px solid white;box-shadow:0 0 0 1px #246b4a}
+footer{font-size:10px;color:var(--muted);line-height:1.5;padding:0 3px 12px}
+.amap-info-content{font-family:inherit;line-height:1.55}.popup-title{font-weight:800;font-size:14px}.edu-card{width:280px;color:#263b2e}.edu-card img{display:block;width:100%;height:138px;object-fit:cover;border-radius:10px;margin:0 0 9px}.edu-tag{display:inline-block;background:#e5f2e7;color:#286143;padding:3px 7px;border-radius:999px;font-size:10px;font-weight:700;margin:0 4px 5px 0}.edu-card h3{font-size:17px;margin:4px 0 6px;color:#173c2b}.edu-card p{font-size:11px;line-height:1.65;margin:5px 0;color:#506157}.edu-card .edu-section{border-top:1px solid #e3ebe4;margin-top:8px;padding-top:7px}.edu-card .edu-section b{font-size:11px;color:#214c33}.edu-card .caption{font-size:9px;color:#78867d;margin-top:3px}
+
+.public-hero{background:linear-gradient(145deg,#ffffff 0%,#edf7ee 100%);border-color:#d7e8d9}
+.public-hero h2{font-size:25px;line-height:1.25;letter-spacing:-.03em}
+.public-hero p{font-size:13px;line-height:1.75;color:#52675a}
+.public-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.public-tags span{font-size:10px;padding:6px 8px;border-radius:99px;background:#e5f2e7;color:#2d6040;font-weight:700}
+.stop-featured{background:#f2f8f2;border:1px solid #d9e9dc;border-radius:12px;padding:12px;margin:6px 0 10px}
+.stop-featured .num{background:#245f3f;color:white}
+.stop-featured:hover{background:#e8f4ea}
+.stop-featured:focus{outline:2px solid #5d9b70;outline-offset:2px}
+
+@media(max-width:800px){header{height:64px;padding:0 14px}.topnote{display:none}main{display:flex;flex-direction:column;height:auto;min-height:calc(100vh - 64px)}.mapwrap{order:0;height:52vh;min-height:340px}.maptools{top:10px;left:10px}.maptools button{padding:8px 10px}aside{order:1;overflow:visible;border-right:0;padding:12px}.hero h2{font-size:20px}.legend{bottom:10px;right:10px}.stats{grid-template-columns:repeat(4,1fr)}.stat{padding:8px}.stat strong{font-size:15px}.stat span{font-size:10px}}
+
+/* Nature identification tools and point navigation */
+.tool-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:15px;margin-bottom:14px;box-shadow:0 3px 14px #163b2910}
+.tool-card h3{font-size:14px;margin:0 0 6px}
+.tool-card p{font-size:12px;line-height:1.55;color:var(--muted);margin:0 0 11px}
+.tool-links{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tool-link{display:flex;align-items:center;gap:8px;text-decoration:none;color:#214631;background:#f0f6f0;border:1px solid #dce8dd;border-radius:11px;padding:10px 9px;font-size:12px;font-weight:800}
+.tool-icon{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:#dcefe0;font-size:17px;flex:0 0 30px}
+.photo-input{display:block;width:100%;font-size:11px;color:var(--muted);margin:8px 0}
+.photo-preview{display:none;width:100%;max-height:170px;object-fit:cover;border-radius:10px;margin:8px 0}
+.tool-note{font-size:10px!important;color:#7a887e!important;margin-top:8px!important;margin-bottom:0!important}
+.nav-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.nav-status{font-size:11px;line-height:1.5;color:var(--muted);margin-top:8px}
+.destination-choice{margin-top:10px;padding:9px 10px;background:#edf5ee;border-radius:10px;font-size:11px;color:#52675a}
+.destination-choice strong{display:block;margin-top:3px;color:#214631;font-size:13px}
+.route-panel{display:none;margin-top:10px;padding:11px;background:#f2f7f2;border:1px solid #dce8dd;border-radius:11px}
+.route-panel.active{display:block}.route-summary{font-size:12px;font-weight:800;color:#214631;line-height:1.5}
+.live-instruction{margin-top:8px;padding:8px 9px;border-radius:9px;background:#fff7e8;color:#7a4a18;font-size:12px;font-weight:800;line-height:1.5}
+.route-steps{margin:8px 0 0;padding-left:20px;max-height:190px;overflow:auto;font-size:11px;line-height:1.55;color:#52675a}
+.route-steps li{padding:4px 2px;border-top:1px solid #e0e9e1}.route-steps li:first-child{border-top:0}
+.map-point{position:relative;display:block;width:20px;height:20px;cursor:pointer}.map-point .resource-map-marker{display:grid}.map-point-name{position:absolute;left:24px;top:-1px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:4px 8px;border:1px solid #dce5dd;background:#fffffff2;color:#365141;border-radius:7px;font:500 11px/1.4 "Microsoft YaHei",sans-serif;box-shadow:0 2px 7px #173c2b12;pointer-events:none}.map-labels-compact .map-point-name{display:none}.map-labels-compact .map-point:hover .map-point-name{display:block}.resource-names-off .resource-marker .map-point-name,.nearby-names-off .nearby-marker .map-point-name{display:none}.amap-marker-label{border:0!important;background:transparent!important;padding:0!important}.layer-switches{display:flex;gap:18px;flex-wrap:wrap;margin:10px 0 12px;color:#52675a;font-size:12px}.layer-switches label{display:flex;align-items:center;gap:6px;cursor:pointer}.layer-switches input{accent-color:#46784f;width:15px;height:15px;margin:0}.poi-list-item{display:block;width:100%;text-align:left;padding:9px 8px;border:0;border-bottom:1px solid #e5ece7;background:transparent;color:#365141;border-radius:6px;font:inherit;font-size:12px;cursor:pointer}.poi-list-item:hover{background:#edf5ee}.resource-photo-gallery{display:grid;gap:7px}.resource-photo-gallery img{display:block;width:100%;max-height:180px;object-fit:cover;border-radius:9px}.resource-photo-gallery{margin-bottom:9px}
+.resource-controls{display:grid;gap:8px}.resource-controls input,.resource-controls select{width:100%;border:1px solid #dce5dd;border-radius:10px;background:#fff;color:#1c2b24;padding:10px 11px;font:inherit;font-size:12px}
+.resource-controls-row{display:grid;grid-template-columns:1fr auto;gap:8px}.resource-controls .btn{white-space:nowrap}.resource-hint{font-size:10px;line-height:1.55;color:#718077}
+.resource-map-marker{position:relative;width:20px;height:20px;display:grid;place-items:center;cursor:pointer;filter:drop-shadow(0 2px 3px #173c2b55)}.resource-map-marker>span{width:14px;height:14px;border:2px solid #fff;border-radius:50% 50% 50% 0;background:var(--marker-color);transform:rotate(-45deg)}.resource-map-marker>b{position:absolute;left:13px;top:-7px;min-width:17px;height:17px;padding:0 4px;display:grid;place-items:center;border-radius:9px;background:#173c2b;color:#fff;font-size:9px;line-height:1}
+.resource-popup-wrap{width:310px;max-height:430px;overflow:auto;padding-right:3px}.resource-group-title{position:sticky;top:0;z-index:2;padding:7px 9px;margin-bottom:8px;border-radius:8px;background:#173c2b;color:#fff;font-size:11px;font-weight:800}.resource-popup-card{padding:2px 0 12px}.resource-popup-card+.resource-popup-card{padding-top:12px;border-top:2px solid #dfe9e1}.resource-popup-card>img{width:100%;height:135px;object-fit:cover;border-radius:9px;margin-bottom:8px;background:#edf3ee}.resource-popup-heading{display:flex;gap:6px;flex-wrap:wrap}.resource-code,.resource-category{display:inline-block;padding:3px 7px;border-radius:999px;font-size:9px;font-weight:800;background:#edf4ee;color:#28593d}.resource-category{background:#eef2f7;color:#38536b}.resource-popup-card h3{font-size:17px;margin:6px 0;color:#173c2b}.resource-popup-section{border-top:1px solid #e6ece7;padding-top:6px;margin-top:6px}.resource-popup-section b{font-size:10px;color:#28593d}.resource-popup-section p{font-size:11px;line-height:1.55;color:#506157;margin:3px 0}.resource-coordinates{font-size:9px;color:#78867d;margin-top:7px}
+@media(max-width:800px){.tool-links{grid-template-columns:1fr 1fr}.nav-actions{grid-template-columns:1fr 1fr}}
+
+
+#natureCourse{width:100%;border:1px solid #dce5dd;border-radius:10px;background:white;padding:10px;font:inherit;font-size:13px}
+.course-detail{background:#f3f8f1;border-radius:12px;margin:11px 0;padding:12px;font-size:12px;color:#415847;line-height:1.6}
+.course-detail p{margin:6px 0}.course-detail ol{padding-left:18px;margin:10px 0}.course-detail li{padding:6px 0;border-bottom:1px solid #e3ece1}
+.course-detail li button{display:block;border:0;background:transparent;color:#21683d;font-weight:750;padding:2px 0;cursor:pointer;text-align:left}
+.course-detail li span{display:block;color:#738576;font-size:11px}
+.course-pin{height:28px;width:28px;border-radius:50%;border:3px solid white;background:#ed8426;color:white;display:grid;place-items:center;font-weight:800;box-shadow:0 2px 8px #3338}
+#majorLegend{display:grid;grid-template-columns:repeat(2,max-content);gap:7px 13px}#majorLegend .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+</style>
+<link rel="stylesheet" href="resource-grades.css?v=grade-v2"></head>
+<body>
+<div id="localFileHint" hidden style="padding:12px 18px;background:#fff1cc;color:#664d12;font-size:13px">当前直接打开了 HTML 文件。建议关闭此页，双击同文件夹中的“双击启动网站.cmd”，通过本地网址打开；地图底图及景点查询均需网络连接。</div>
+<script>document.getElementById('localFileHint').hidden = location.protocol !== 'file:';</script>
+<header><div class="brand"><div class="brandmark">⌁</div><div><h1>缙云山自然教育资源地图</h1><div class="subhead">INTERACTIVE TRAIL GUIDE · 基于导入的 KMZ 轨迹</div></div></div><div class="topnote">资源档案 309 项 · 代表性分类导览 · 自然教育课程</div></header>
+<main>
+<aside>
+
+ <section class="tool-card" aria-label="自然识别工具">
+  <div class="eyebrow">NATURE TOOLS</div>
+  <h3>随手识自然</h3>
+  <p>遇到不认识的植物或鸟类，可以拍照留存，再使用专业识别工具查询。</p>
+  <div class="tool-links">
+   <a class="tool-link" href="https://www.xingseapp.com/" target="_blank" rel="noopener noreferrer" aria-label="打开形色植物识别">
+    <span class="tool-icon">🌿</span><span>形色<br><small>识花识植物 ↗</small></span>
+   </a>
+   <a class="tool-link" href="https://aboutbirds.app/" target="_blank" rel="noopener noreferrer" aria-label="打开懂鸟鸟类识别">
+    <span class="tool-icon">🐦</span><span>懂鸟<br><small>识鸟与鸟鸣 ↗</small></span>
+   </a>
+  </div>
+  <label class="photo-input" for="naturePhoto">先拍照 / 选择一张自然观察照片</label>
+  <input id="naturePhoto" class="photo-input" type="file" accept="image/*" capture="environment">
+  <img id="naturePhotoPreview" class="photo-preview" alt="自然观察照片预览">
+  <p class="tool-note">说明：网页可打开相机并预览照片，但暂不能直接把照片传入形色或懂鸟 App；请在对应应用中重新拍摄或选择照片识别。</p>
+ </section>
+
+ <section class="card hero public-hero">
+  <div class="eyebrow">JINYUN MOUNTAIN · NATURE GUIDE</div>
+  <h2>走进缙云山<br>发现自然的细节</h2>
+  <p>沿着山间步道慢慢探索，认识森林、岩石与山雾。点击地图上的自然教育点，开启一段关于山地天气与生态的微课堂。</p>
+  <div class="actions"><button class="btn primary" id="startTour">探索狮子峰 ↗</button><button class="btn secondary" id="stopTour">查看全线</button></div>
+  <div class="public-tags"><span>🌿 山地森林</span><span>☁️ 雾中寻塔</span><span>🥾 低影响徒步</span></div>
+ </section>
+
+ <section class="card" id="nearbyPlaces">
+  <div class="sectionhead"><h3>景点与场馆</h3></div>
+  <p class="resource-hint">高德地图收录的周边景点、博物馆、展览馆、科技馆、文化宫和体育场馆。与资源点使用相同的图钉与名称样式，点击查看详情。</p>
+  <div class="actions"><button class="btn secondary" id="reloadPlaces">刷新景点场馆</button></div>
+  <div class="layer-switches"><label><input id="togglePlaces" type="checkbox" checked>显示点位</label><label><input id="nearbyNames" type="checkbox" checked>显示名称</label></div>
+  <p id="placesStatus" class="resource-hint" role="status">等待地图加载…</p>
+  <div id="placesList" style="max-height:200px;overflow:auto"></div>
+ </section>
+ <section class="card" id="natureCourseCard" aria-label="自然教育课程规划">
+  <div class="sectionhead"><h3>自然教育课程路线</h3><span>六大主题</span></div>
+  <p class="resource-hint">按课程主题选择教学点位，地图将显示沿途观察站点并尝试生成步行线路。</p>
+  <label for="natureCourse" class="resource-hint" style="display:block;margin:8px 0 5px">选择课程方向</label>
+  <select id="natureCourse" aria-label="选择自然教育课程"><option value="">请选择自然教育课程</option></select>
+  <div class="course-detail" id="courseDetail" aria-live="polite">选择课程后查看教学目标与站点。</div>
+  <p class="resource-hint" id="courseStatus" role="status" aria-live="polite"></p>
+  <button class="btn secondary" id="clearCourse" type="button">清除课程路线</button>
+ </section>
+ <section class="card" id="resourceBrowser">
+  <div class="sectionhead"><h3>自然教育资源</h3><span id="resourceCount">正在加载…</span></div>
+  <div class="layer-switches"><label><input id="toggleResources" type="checkbox" checked>显示点位</label><label><input id="resourceNames" type="checkbox" checked>显示名称</label><label><input id="representativeOnly" type="checkbox" checked>仅显示代表性点位</label></div>
+  <fieldset class="resource-grade-tabs"><legend>按资源级别查看</legend><div class="resource-grade-options"><label><input type="radio" name="resourceGrade" value="" checked><span>全部</span></label><label><input type="radio" name="resourceGrade" value="1"><span>一级</span></label><label><input type="radio" name="resourceGrade" value="2"><span>二级</span></label><label><input type="radio" name="resourceGrade" value="3"><span>三级</span></label></div></fieldset><div class="resource-grade-key" aria-label="资源分级图例"><div><span class="grade-key-icon" data-grade-key="1"></span><span>一级：核心典型资源（32 项）</span></div><div><span class="grade-key-icon" data-grade-key="2"></span><span>二级：特色代表资源（111 项）</span></div><div><span class="grade-key-icon" data-grade-key="3"></span><span>三级：普通基础资源（166 项）</span></div></div><p id="gradeStatus" class="resource-hint" role="status">正在读取资源分级…</p><p class="resource-hint">切换等级会关闭代表性点位限制，可与区域、分类及搜索组合使用。同坐标有多项资源时，图标按当前可见的最高等级绘制，角标为资源项数。分级来自提供的内容表，不等同于物种或文物保护等级。</p>
+  <div class="resource-controls">
+   <select id="resourceArea" aria-label="按资源区域筛选"><option value="" selected>全部区域</option><option value="缙云山国家级保护区内部区域">缙云山国家级保护区内部区域</option><option value="黛湖区域">黛湖区域</option></select>
+   <input id="resourceSearch" type="search" placeholder="搜索名称、编号、主题…" aria-label="搜索资源点位">
+   <div class="resource-controls-row">
+    <select id="resourceCategory" aria-label="按资源分类筛选"><option value="">全部分类</option></select>
+    <button class="btn secondary" id="clearResourceFilter" type="button">重置</button>
+   </div>
+   <div class="resource-hint">颜色区分七类资源；默认显示代表性资源，关闭“仅显示代表性点位”可恢复完整档案点位。输入搜索词也可查找未入选的原始资源。</div>
+  </div>
+ </section>
+
+ <section class="card" id="pointNavigationCard">
+  <div class="sectionhead"><h3>实时步行导航</h3><span>任意地点</span></div>
+  <p style="font-size:12px;color:var(--muted);line-height:1.55;margin:0">点击地图标记、底图地点名称或地图任意位置设为目的地，然后开启实时导航。</p>
+  <div class="destination-choice">当前目的地<strong id="selectedDestinationName">请先在地图上选择地点</strong></div>
+  <div class="nav-actions">
+   <button class="btn primary" id="locateMe">◎ 定位我的位置</button>
+   <button class="btn primary" id="startRealtimeNav">开始实时导航</button>
+   <button class="btn secondary" id="stopRealtimeNav" disabled>停止实时导航</button>
+   <button class="btn secondary" id="clearRoute" disabled>清除路线</button>
+   <button class="btn secondary" id="openExternalNav">外部高德导航 ↗</button>
+  </div>
+  <div class="nav-status" id="navStatus">实时导航需要定位授权、HTTPS 或 localhost，并保持页面在前台打开。</div>
+  <div class="route-panel" id="routePanel" aria-live="polite">
+   <div class="route-summary" id="routeSummary"></div>
+   <div class="live-instruction" id="liveInstruction">等待定位与路线指引</div>
+   <ol class="route-steps" id="routeSteps"></ol>
+  </div>
+ </section>
+
+ <section class="card">
+  <div class="sectionhead"><h3>导览路线</h3><span>步道概览</span></div>
+  <div class="stop stop-featured" id="lionGuideItem" role="button" tabindex="0">
+   <div class="num">✦</div><div><b>狮子峰 · 雾中寻塔</b><small>自然教育点 · 认识雾的形成与远景变化</small></div><div class="jump">›</div>
+  </div>
+ </section>
+ <section class="card">
+  <div class="sectionhead"><h3>自然观察提示</h3><span id="stepLabel">欢迎探索</span></div>
+  <div class="guidebox" id="guideText"><strong>把脚步放慢一点</strong>试着比较近处树叶与远处山体的清晰度。天气潮湿时，山雾可能在林间和山谷聚散；观察光线、风和能见度的变化，发现自然环境中的小线索。</div>
+ </section>
+ <footer>地图底图使用高德地图 JavaScript API 2.0，可切换标准地图与卫星影像，需要网络连接。本地图用于公众自然导览；形色与懂鸟为外部识别服务，照片不会由本网页自动传入这些 App。导航由外部地图服务提供，请核实实际步道与现场安全情况。</footer>
+</aside>
+<div class="mapwrap">
+ <div class="maptools"><button id="viewInternal">保护区内部区域</button><button id="viewDaihu">黛湖区域</button><button id="fit">⌖ 查看导览点</button><button id="toggleBaseMap">切换卫星</button><button id="focusLion">狮子峰导览 ↗</button></div>
+ <div id="map"></div>
+ <div class="legend" id="majorLegend"></div>
+</div>
+</main>
+<script>
+window.addEventListener('error', function(event) {
+  const target = event.target;
+  if (target && target.tagName === 'SCRIPT' && target.src) {
+    const url = new URL(target.src);
+    window.mapScriptFailure = url.hostname + url.pathname;
+    console.error('地图脚本下载失败：' + window.mapScriptFailure);
+  }
+}, true);
+</script>
+<script src="./amap-config.js?v=resource-v4"></script>
+<script src="./resource-points.js?v=resource-v4"></script>
+<script src="./resource-grades.js?v=grade-v2"></script><script src="./map-point-ui.js?v=grade-v2"></script>
+<script>document.querySelectorAll('[data-grade-key]').forEach(el=>{el.innerHTML=window.MapPointUI.gradeSymbol(Number(el.dataset.gradeKey),'#729775',1,'资源分级图例');});</script><script src="./curated-resources.js?v=resource-v5"></script>
+<script src="./nature-courses.js?v=resource-v5"></script>
+<script src="./course-routes.js?v=resource-v5"></script>
+<script src="./resource-map-points.js?v=grade-v2"></script>
+<script src="./nearby-places.js?v=resource-v4"></script>
+
+<script>
+window._AMapSecurityConfig = {
+  securityJsCode: window.AMAP_CONFIG && window.AMAP_CONFIG.securityJsCode
+    ? window.AMAP_CONFIG.securityJsCode
+    : ''
+};
+</script>
+
+<script src="https://webapi.amap.com/loader.js"></script>
+<script>
+const track = [[29.838945,106.3824567,684.0],[29.8389867,106.3823617,684.0],[29.83888,106.382345,682.0],[29.8387883,106.3823267,682.0],[29.8386967,106.38232,681.0],[29.83862,106.382375,681.0],[29.8385264,106.3823962,682.0],[29.838525,106.3824846,684.0],[29.8385574,106.382589,686.0],[29.8386031,106.382695,686.0],[29.8386433,106.3828083,687.0],[29.8386717,106.38291,687.0],[29.8386732,106.3830314,687.0],[29.8386687,106.3831627,686.0],[29.8386848,106.3832772,685.0],[29.8387388,106.3833638,685.0],[29.8388049,106.383443,686.0],[29.8388819,106.3835225,688.0],[29.8389596,106.3835946,687.0],[29.8390484,106.383646,687.0],[29.8391455,106.383643,686.0],[29.8392381,106.3836617,685.0],[29.8393032,106.3837484,685.0],[29.8393628,106.3838422,685.0],[29.8394318,106.3839151,683.0],[29.8395078,106.3839732,682.0],[29.8395675,106.3840523,680.0],[29.839631,106.3841362,680.0],[29.8397003,106.384226,679.0],[29.8397793,106.3843061,679.0],[29.8397804,106.3844033,678.0],[29.8397572,106.3845219,678.0],[29.839768,106.3846325,679.0],[29.8397871,106.3847397,680.0],[29.8398379,106.3848379,680.0],[29.83992,106.3848838,679.0],[29.8399988,106.3849437,678.0],[29.8400801,106.3849993,676.0],[29.8401684,106.3850441,677.0],[29.8402434,106.3851196,678.0],[29.8403116,106.3851935,679.0],[29.8403925,106.3852818,680.0],[29.8404711,106.3853675,678.0],[29.8405234,106.3854297,676.0],[29.84053,106.38553,675.0],[29.8404433,106.385575,674.0],[29.8404596,106.3856679,674.0],[29.8404825,106.385781,675.0],[29.8405357,106.3858792,674.0],[29.8405843,106.3859771,674.0],[29.8405708,106.386082,674.0],[29.8405832,106.386183,675.0],[29.8406401,106.3862659,676.0],[29.8406959,106.386357,680.0],[29.8406397,106.386372,682.0],[29.8405327,106.3863643,681.0],[29.8404376,106.3864038,680.0],[29.8403426,106.3864303,681.0],[29.8402724,106.3865063,683.0],[29.8402365,106.3866245,686.0],[29.8402248,106.3867619,689.0],[29.840226,106.3868839,693.0],[29.8402106,106.3869971,695.0],[29.8402159,106.3871166,695.0],[29.8402211,106.3872258,694.0],[29.8402663,106.387336,695.0],[29.8403381,106.3874432,696.0],[29.8403894,106.3875482,696.0],[29.8404418,106.3876414,695.0],[29.8404854,106.3877493,694.0],[29.8405243,106.3878621,693.0],[29.8405569,106.3879688,693.0],[29.8405587,106.3880778,693.0],[29.8405249,106.3881828,693.0],[29.84048,106.3882798,694.0],[29.8404716,106.3883855,696.0],[29.8405667,106.3884067,698.0],[29.840475,106.3883867,698.0],[29.8405244,106.3884569,700.0],[29.8406257,106.3884621,702.0],[29.8407302,106.3884951,703.0],[29.84083,106.3884662,704.0],[29.8409117,106.3885233,705.0],[29.840995,106.388475,713.0],[29.8410572,106.3885465,717.0],[29.8411516,106.3885531,720.0],[29.8412448,106.3885262,724.0],[29.841343,106.3884988,730.0],[29.8414389,106.3884845,735.0],[29.8415207,106.3885437,738.0],[29.8414996,106.3885032,740.0],[29.8415329,106.3885425,743.0],[29.8415645,106.388633,745.0],[29.8416171,106.3887308,746.0],[29.8417,106.3887858,747.0],[29.8417253,106.3888813,749.0],[29.8417674,106.3889964,751.0],[29.8418177,106.3890968,754.0],[29.8418435,106.3891386,757.0],[29.8418638,106.3892188,759.0],[29.841793,106.3892385,757.0],[29.8418402,106.3892344,756.0],[29.8417706,106.3892096,755.0],[29.8417963,106.3892565,751.0],[29.8417523,106.3893424,746.0],[29.8418016,106.3893323,745.0],[29.8418935,106.3893451,744.0],[29.8419094,106.3894259,745.0],[29.8418794,106.3895385,749.0],[29.8418395,106.3896492,754.0],[29.8417794,106.3897432,758.0],[29.8417268,106.3898392,764.0],[29.841732,106.3899485,766.0],[29.8417265,106.3899974,765.0],[29.84182,106.390005,765.0],[29.84191,106.3900067,766.0],[29.8418308,106.3900097,767.0],[29.8418785,106.3900079,765.0],[29.8417933,106.3900083,764.0],[29.8417467,106.3901017,761.0],[29.8416901,106.3901908,757.0],[29.8417,106.3903067,754.0],[29.8417083,106.3904167,750.0],[29.8417392,106.3905196,744.0],[29.8417561,106.390638,737.0],[29.841686,106.3906634,731.0],[29.8415859,106.39063,727.0],[29.8414655,106.3906056,726.0],[29.8413795,106.3906792,732.0],[29.8413019,106.3907736,743.0],[29.8412386,106.3908767,756.0],[29.84117,106.3909521,764.0],[29.8410872,106.3909501,770.0],[29.8410114,106.3909927,775.0],[29.8409025,106.3910749,791.0],[29.8409442,106.391055,800.0],[29.841024,106.3911008,805.0],[29.8410467,106.3912183,808.0],[29.8410967,106.39112,810.0],[29.8410583,106.391015,810.0],[29.840975,106.3910667,811.0],[29.8409495,106.3911677,813.0],[29.8409317,106.3912933,817.0],[29.84096,106.391185,820.0],[29.8409164,106.3912388,821.0],[29.8408318,106.3912661,821.0],[29.8408845,106.3912545,822.0],[29.8409474,106.3912351,823.0],[29.8408783,106.3912033,823.0],[29.8408183,106.391295,823.0],[29.840725,106.3912933,823.0],[29.8407812,106.3913297,822.0],[29.8408792,106.3913317,819.0],[29.8409096,106.3913558,817.0],[29.8409825,106.3913219,816.0],[29.8410564,106.39125,815.0],[29.841096,106.3911493,814.0],[29.8410831,106.3910355,814.0],[29.8410661,106.3909228,815.0],[29.8411212,106.3909284,816.0],[29.8411998,106.3908895,816.0],[29.8412829,106.3908336,813.0],[29.8413511,106.3907508,809.0],[29.8414409,106.3907289,806.0],[29.8415347,106.390711,801.0],[29.8414783,106.3908017,797.0],[29.8414217,106.3908983,793.0],[29.8414214,106.3910035,790.0],[29.8414234,106.3911178,788.0],[29.8413738,106.3911987,786.0],[29.8413084,106.3912747,784.0],[29.8412442,106.3913565,782.0],[29.8411698,106.3914251,781.0],[29.8411215,106.3915193,781.0],[29.8411063,106.3916248,782.0],[29.8411524,106.391646,783.0],[29.8411623,106.3917278,784.0],[29.8412246,106.3917945,785.0],[29.8413068,106.3918633,788.0],[29.8413406,106.3919693,791.0],[29.841374,106.3920764,794.0],[29.8413095,106.392093,795.0],[29.8412487,106.3920189,798.0],[29.8412283,106.39208,801.0],[29.841225,106.3921967,805.0],[29.8412344,106.3923049,807.0],[29.8412517,106.392465,809.0],[29.8413267,106.392535,811.0],[29.8412833,106.39244,811.0],[29.84133,106.392535,810.0],[29.8413978,106.3926117,810.0],[29.841472,106.3926838,809.0],[29.84139,106.392615,808.0],[29.8414733,106.3926717,809.0],[29.8415367,106.3927533,809.0],[29.8416042,106.3928364,810.0],[29.841679,106.3929172,810.0],[29.8417535,106.3929847,809.0],[29.8416817,106.39291,809.0],[29.8416133,106.3928367,811.0],[29.8415535,106.3927535,811.0],[29.8414861,106.3926839,812.0],[29.8414703,106.3925886,813.0],[29.8414307,106.3924773,813.0],[29.8414675,106.3923776,814.0],[29.8415509,106.3923062,812.0],[29.8415794,106.3922527,812.0],[29.8415417,106.3923767,814.0],[29.8416383,106.3924333,817.0],[29.8416758,106.3924265,818.0],[29.8417272,106.3923506,818.0],[29.8417287,106.3922327,817.0],[29.8416501,106.3921801,816.0],[29.8415675,106.3922238,816.0],[29.8415096,106.3923182,816.0],[29.841424,106.3923691,814.0],[29.8413802,106.3923069,813.0],[29.8413621,106.3921901,810.0],[29.8413935,106.3920729,808.0],[29.8413656,106.391968,807.0],[29.8413386,106.3918545,806.0],[29.8412805,106.3917465,805.0],[29.8411967,106.3916928,803.0],[29.8411793,106.3916079,801.0],[29.8411399,106.3915175,796.0],[29.841189,106.3914478,793.0],[29.8412754,106.3913999,790.0],[29.8413693,106.3913402,788.0],[29.8414451,106.3912369,787.0],[29.8414676,106.3911439,786.0],[29.8414814,106.3910317,787.0],[29.8414758,106.3909821,787.0],[29.8414838,106.3908866,788.0],[29.8415201,106.3907904,788.0],[29.8415558,106.3906825,789.0],[29.841595,106.3905735,790.0],[29.8416622,106.3904838,790.0],[29.8416654,106.3903792,789.0],[29.8416732,106.3902584,788.0],[29.8416766,106.3901358,787.0],[29.8417346,106.3900413,785.0],[29.8417569,106.3899301,783.0],[29.8417838,106.3898142,780.0],[29.8418379,106.3897156,777.0],[29.841887,106.38962,775.0],[29.8419316,106.3895235,772.0],[29.841979,106.3894324,769.0],[29.8419423,106.3893456,766.0],[29.8418998,106.3892511,763.0],[29.8418671,106.3891345,761.0],[29.8418345,106.3890602,760.0],[29.8418041,106.3889663,760.0],[29.8417587,106.3888698,763.0],[29.8417242,106.3887677,763.0],[29.8416658,106.3886825,762.0],[29.8416061,106.3885977,761.0],[29.8415408,106.3884935,759.0],[29.8414593,106.3884082,757.0],[29.8413599,106.3884007,756.0],[29.8412616,106.3884249,756.0],[29.841159,106.3884598,756.0],[29.8410783,106.3884481,755.0],[29.8409873,106.3884467,753.0],[29.8408919,106.3884463,749.0],[29.84081,106.3883883,745.0],[29.840735,106.3884467,737.0],[29.8406501,106.3884303,733.0],[29.8405494,106.3884148,728.0],[29.8404674,106.3883578,725.0],[29.8404791,106.3882631,721.0],[29.8405373,106.3881588,717.0],[29.8405771,106.3880485,711.0],[29.8405809,106.3879399,708.0],[29.8405623,106.3878235,708.0],[29.8405188,106.3877251,707.0],[29.8404693,106.3876216,707.0],[29.8404337,106.387517,707.0],[29.8403909,106.387407,707.0],[29.8403255,106.3873088,707.0],[29.8402673,106.3872215,706.0],[29.840237,106.3871052,705.0],[29.8402173,106.3869912,704.0],[29.8402689,106.3869143,702.0],[29.8402377,106.3869515,699.0],[29.8401666,106.3869285,695.0],[29.8401317,106.386825,693.0],[29.8400867,106.386725,696.0],[29.8400882,106.3868013,698.0],[29.840116,106.3869101,698.0],[29.8401986,106.3869522,697.0],[29.8402658,106.3868944,696.0],[29.8403058,106.3867878,694.0],[29.8403055,106.3866602,694.0],[29.8403238,106.3865319,695.0],[29.8403939,106.386474,695.0],[29.8404947,106.3864239,696.0],[29.8405939,106.3863728,695.0],[29.8406946,106.3863821,694.0],[29.8407077,106.3862985,692.0],[29.8407782,106.3862662,689.0],[29.8408717,106.3863,688.0],[29.840945,106.3863817,684.0],[29.840845,106.3863433,679.0],[29.84079,106.386235,676.0],[29.8407082,106.3861591,676.0],[29.8406384,106.3860787,677.0],[29.8406324,106.3859807,680.0],[29.8406018,106.3858723,679.0],[29.8405452,106.385782,679.0],[29.8405262,106.3856742,678.0],[29.8405396,106.3855645,677.0],[29.8405496,106.3854536,676.0],[29.8405258,106.3853477,676.0],[29.8404659,106.3852652,676.0],[29.8403765,106.385215,678.0],[29.8402978,106.3851552,681.0],[29.840246,106.3850669,683.0],[29.8401637,106.3850049,685.0],[29.8400807,106.384955,686.0],[29.8399897,106.3848961,686.0],[29.8399104,106.3848153,686.0],[29.8398385,106.3847439,686.0],[29.8397942,106.3846458,686.0],[29.8397857,106.3845305,686.0],[29.8397911,106.3844118,684.0],[29.8397898,106.3842959,684.0],[29.8397775,106.3842524,683.0],[29.8396983,106.3841917,682.0],[29.8396183,106.3841217,682.0],[29.8395623,106.3840376,683.0],[29.8394912,106.3839741,685.0],[29.8394168,106.3839058,685.0],[29.8393589,106.3838227,686.0],[29.8392934,106.3837367,687.0],[29.8392245,106.3836452,688.0],[29.8391318,106.3836049,689.0],[29.8390282,106.383609,689.0],[29.8389406,106.3835516,689.0],[29.8388704,106.3834606,691.0],[29.8387888,106.3833861,693.0],[29.8387195,106.383299,694.0],[29.8386911,106.3831964,694.0],[29.8386945,106.3830742,693.0],[29.8386732,106.3829523,691.0],[29.8386573,106.3828361,691.0],[29.8386455,106.3827254,691.0],[29.8386135,106.3826257,692.0],[29.838585,106.3825173,691.0],[29.8385648,106.3824087,692.0],[29.8386268,106.3824029,692.0],[29.838701,106.3823582,693.0],[29.8388013,106.3823251,692.0],[29.8389092,106.3823292,689.0],[29.8389505,106.3823558,686.0],[29.8389265,106.3824732,682.0],[29.8388023,106.382392,682.0],[29.8387654,106.382441,668.0],[29.8387698,106.3825676,660.0],[29.8387475,106.3826843,661.0],[29.8388193,106.3826224,662.0],[29.8389256,106.3824464,666.0],[29.838908,106.3823297,675.0],[29.8388968,106.3824132,682.0],[29.8389149,106.3825398,687.0],[29.8389206,106.3825458,689.0],[29.8389025,106.3824641,691.0],[29.8388734,106.3823555,691.0],[29.8389234,106.3823972,691.0],[29.8389659,106.3824961,692.0],[29.8389083,106.3825088,692.0],[29.8389491,106.3825589,689.0],[29.8389491,106.3825589,689.0]];
+const times = ["2026-10-26T01:15:32Z","2026-10-26T01:16:54Z","2026-10-26T01:18:17Z","2026-10-26T01:19:04Z","2026-10-26T01:20:21Z","2026-10-26T01:20:43Z","2026-10-26T01:21:01Z","2026-10-26T01:21:31Z","2026-10-26T01:21:45Z","2026-10-26T01:21:57Z","2026-10-26T01:22:57Z","2026-10-26T01:23:35Z","2026-10-26T01:23:43Z","2026-10-26T01:23:49Z","2026-10-26T01:24:03Z","2026-10-26T01:24:45Z","2026-10-26T01:25:01Z","2026-10-26T01:25:21Z","2026-10-26T01:25:29Z","2026-10-26T01:25:45Z","2026-10-26T01:25:59Z","2026-10-26T01:26:10Z","2026-10-26T01:26:23Z","2026-10-26T01:26:53Z","2026-10-26T01:27:03Z","2026-10-26T01:27:17Z","2026-10-26T01:27:39Z","2026-10-26T01:28:01Z","2026-10-26T01:28:11Z","2026-10-26T01:28:27Z","2026-10-26T01:29:05Z","2026-10-26T01:29:21Z","2026-10-26T01:29:35Z","2026-10-26T01:29:59Z","2026-10-26T01:30:33Z","2026-10-26T01:31:01Z","2026-10-26T01:31:25Z","2026-10-26T01:31:37Z","2026-10-26T01:31:49Z","2026-10-26T01:32:05Z","2026-10-26T01:32:17Z","2026-10-26T01:32:51Z","2026-10-26T01:33:03Z","2026-10-26T01:33:25Z","2026-10-26T01:35:53Z","2026-10-26T01:36:17Z","2026-10-26T01:36:29Z","2026-10-26T01:36:49Z","2026-10-26T01:37:09Z","2026-10-26T01:37:41Z","2026-10-26T01:38:01Z","2026-10-26T01:38:13Z","2026-10-26T01:38:53Z","2026-10-26T01:39:33Z","2026-10-26T01:40:19Z","2026-10-26T01:40:29Z","2026-10-26T01:40:39Z","2026-10-26T01:40:55Z","2026-10-26T01:41:09Z","2026-10-26T01:41:21Z","2026-10-26T01:41:31Z","2026-10-26T01:41:37Z","2026-10-26T01:41:47Z","2026-10-26T01:41:57Z","2026-10-26T01:42:29Z","2026-10-26T01:42:37Z","2026-10-26T01:42:47Z","2026-10-26T01:42:55Z","2026-10-26T01:43:05Z","2026-10-26T01:43:13Z","2026-10-26T01:43:29Z","2026-10-26T01:43:41Z","2026-10-26T01:43:49Z","2026-10-26T01:44:01Z","2026-10-26T01:44:25Z","2026-10-26T01:44:42Z","2026-10-26T01:46:55Z","2026-10-26T01:47:27Z","2026-10-26T01:48:17Z","2026-10-26T01:48:51Z","2026-10-26T01:49:17Z","2026-10-26T01:49:41Z","2026-10-26T01:50:49Z","2026-10-26T01:51:03Z","2026-10-26T01:51:21Z","2026-10-26T01:51:39Z","2026-10-26T01:52:37Z","2026-10-26T01:53:07Z","2026-10-26T01:53:15Z","2026-10-26T01:53:29Z","2026-10-26T01:54:03Z","2026-10-26T01:54:21Z","2026-10-26T01:54:35Z","2026-10-26T01:54:47Z","2026-10-26T01:55:01Z","2026-10-26T01:55:17Z","2026-10-26T01:55:29Z","2026-10-26T01:55:39Z","2026-10-26T01:55:43Z","2026-10-26T01:56:15Z","2026-10-26T01:56:35Z","2026-10-26T01:56:47Z","2026-10-26T01:57:05Z","2026-10-26T01:57:21Z","2026-10-26T01:57:43Z","2026-10-26T01:57:52Z","2026-10-26T01:58:03Z","2026-10-26T01:58:15Z","2026-10-26T01:58:31Z","2026-10-26T01:58:39Z","2026-10-26T01:59:01Z","2026-10-26T01:59:13Z","2026-10-26T01:59:23Z","2026-10-26T01:59:29Z","2026-10-26T02:01:50Z","2026-10-26T02:02:02Z","2026-10-26T02:02:48Z","2026-10-26T02:03:36Z","2026-10-26T02:06:30Z","2026-10-26T02:07:22Z","2026-10-26T02:07:48Z","2026-10-26T02:08:58Z","2026-10-26T02:09:12Z","2026-10-26T02:09:34Z","2026-10-26T02:09:54Z","2026-10-26T02:10:18Z","2026-10-26T02:10:26Z","2026-10-26T02:10:40Z","2026-10-26T02:11:24Z","2026-10-26T02:11:52Z","2026-10-26T02:12:14Z","2026-10-26T02:12:28Z","2026-10-26T02:12:40Z","2026-10-26T02:13:28Z","2026-10-26T02:13:36Z","2026-10-26T02:13:42Z","2026-10-26T02:13:48Z","2026-10-26T02:14:58Z","2026-10-26T02:15:26Z","2026-10-26T02:16:28Z","2026-10-26T02:16:46Z","2026-10-26T02:17:24Z","2026-10-26T02:20:38Z","2026-10-26T02:20:50Z","2026-10-26T02:21:42Z","2026-10-26T02:21:54Z","2026-10-26T02:22:54Z","2026-10-26T02:23:04Z","2026-10-26T02:27:22Z","2026-10-26T02:38:58Z","2026-10-26T02:39:14Z","2026-10-26T02:39:26Z","2026-10-26T02:39:42Z","2026-10-26T02:39:54Z","2026-10-26T02:40:16Z","2026-10-26T02:40:50Z","2026-10-26T02:41:16Z","2026-10-26T02:41:32Z","2026-10-26T02:41:52Z","2026-10-26T02:42:10Z","2026-10-26T02:42:40Z","2026-10-26T02:43:04Z","2026-10-26T02:43:20Z","2026-10-26T02:43:38Z","2026-10-26T02:43:52Z","2026-10-26T02:45:46Z","2026-10-26T02:46:12Z","2026-10-26T02:46:20Z","2026-10-26T02:46:32Z","2026-10-26T02:46:44Z","2026-10-26T02:46:54Z","2026-10-26T02:47:08Z","2026-10-26T02:47:18Z","2026-10-26T02:47:30Z","2026-10-26T02:47:38Z","2026-10-26T02:47:56Z","2026-10-26T02:48:28Z","2026-10-26T02:48:44Z","2026-10-26T02:49:37Z","2026-10-26T02:49:46Z","2026-10-26T02:49:58Z","2026-10-26T02:50:44Z","2026-10-26T02:51:04Z","2026-10-26T02:54:46Z","2026-10-26T02:55:36Z","2026-10-26T02:56:13Z","2026-10-26T02:57:15Z","2026-10-26T02:57:46Z","2026-10-26T02:59:28Z","2026-10-26T03:00:12Z","2026-10-26T03:00:40Z","2026-10-26T03:01:10Z","2026-10-26T03:03:00Z","2026-10-26T03:13:40Z","2026-10-26T03:14:18Z","2026-10-26T03:14:30Z","2026-10-26T03:14:48Z","2026-10-26T03:15:02Z","2026-10-26T03:17:24Z","2026-10-26T03:17:36Z","2026-10-26T03:17:52Z","2026-10-26T03:18:02Z","2026-10-26T03:18:20Z","2026-10-26T03:18:36Z","2026-10-26T03:19:34Z","2026-10-26T03:19:44Z","2026-10-26T03:20:42Z","2026-10-26T03:22:24Z","2026-10-26T03:22:32Z","2026-10-26T03:22:40Z","2026-10-26T03:23:38Z","2026-10-26T03:24:12Z","2026-10-26T03:25:00Z","2026-10-26T03:25:24Z","2026-10-26T03:25:56Z","2026-10-26T03:26:08Z","2026-10-26T03:26:32Z","2026-10-26T03:26:52Z","2026-10-26T03:27:06Z","2026-10-26T03:27:14Z","2026-10-26T03:27:38Z","2026-10-26T03:27:52Z","2026-10-26T03:28:02Z","2026-10-26T03:28:28Z","2026-10-26T03:29:06Z","2026-10-26T03:29:54Z","2026-10-26T03:30:06Z","2026-10-26T03:30:14Z","2026-10-26T03:30:26Z","2026-10-26T03:30:32Z","2026-10-26T03:30:40Z","2026-10-26T03:30:42Z","2026-10-26T03:30:52Z","2026-10-26T03:31:04Z","2026-10-26T03:31:14Z","2026-10-26T03:31:26Z","2026-10-26T03:31:38Z","2026-10-26T03:31:52Z","2026-10-26T03:32:08Z","2026-10-26T03:32:16Z","2026-10-26T03:32:26Z","2026-10-26T03:32:40Z","2026-10-26T03:32:52Z","2026-10-26T03:33:02Z","2026-10-26T03:33:10Z","2026-10-26T03:33:20Z","2026-10-26T03:33:32Z","2026-10-26T03:34:06Z","2026-10-26T03:34:14Z","2026-10-26T03:34:22Z","2026-10-26T03:35:00Z","2026-10-26T03:35:36Z","2026-10-26T03:35:50Z","2026-10-26T03:36:04Z","2026-10-26T03:36:16Z","2026-10-26T03:36:50Z","2026-10-26T03:36:58Z","2026-10-26T03:37:06Z","2026-10-26T03:37:16Z","2026-10-26T03:37:26Z","2026-10-26T03:37:36Z","2026-10-26T03:37:58Z","2026-10-26T03:38:28Z","2026-10-26T03:38:46Z","2026-10-26T03:39:54Z","2026-10-26T03:40:18Z","2026-10-26T03:40:44Z","2026-10-26T03:40:56Z","2026-10-26T03:41:06Z","2026-10-26T03:41:20Z","2026-10-26T03:41:36Z","2026-10-26T03:41:46Z","2026-10-26T03:41:54Z","2026-10-26T03:42:08Z","2026-10-26T03:42:18Z","2026-10-26T03:42:30Z","2026-10-26T03:42:38Z","2026-10-26T03:42:52Z","2026-10-26T03:43:02Z","2026-10-26T03:43:10Z","2026-10-26T03:43:18Z","2026-10-26T03:43:28Z","2026-10-26T03:44:22Z","2026-10-26T03:44:34Z","2026-10-26T03:44:50Z","2026-10-26T03:46:11Z","2026-10-26T03:46:55Z","2026-10-26T03:47:09Z","2026-10-26T03:47:19Z","2026-10-26T03:47:27Z","2026-10-26T03:47:43Z","2026-10-26T03:47:55Z","2026-10-26T03:48:08Z","2026-10-26T03:48:21Z","2026-10-26T03:48:41Z","2026-10-26T03:48:53Z","2026-10-26T03:49:03Z","2026-10-26T03:49:17Z","2026-10-26T03:49:33Z","2026-10-26T03:50:15Z","2026-10-26T03:51:29Z","2026-10-26T03:52:23Z","2026-10-26T03:53:23Z","2026-10-26T03:53:35Z","2026-10-26T03:54:07Z","2026-10-26T03:54:23Z","2026-10-26T03:54:37Z","2026-10-26T03:54:47Z","2026-10-26T03:55:01Z","2026-10-26T03:55:15Z","2026-10-26T03:55:21Z","2026-10-26T03:55:29Z","2026-10-26T03:55:41Z","2026-10-26T03:55:51Z","2026-10-26T03:56:05Z","2026-10-26T03:56:13Z","2026-10-26T03:56:21Z","2026-10-26T03:56:37Z","2026-10-26T03:56:47Z","2026-10-26T03:57:01Z","2026-10-26T03:57:13Z","2026-10-26T03:57:27Z","2026-10-26T03:57:43Z","2026-10-26T03:57:55Z","2026-10-26T03:58:05Z","2026-10-26T03:58:15Z","2026-10-26T03:58:29Z","2026-10-26T04:01:17Z","2026-10-26T04:01:53Z","2026-10-26T04:02:11Z","2026-10-26T04:02:27Z","2026-10-26T04:02:41Z","2026-10-26T04:02:53Z","2026-10-26T04:03:09Z","2026-10-26T04:03:19Z","2026-10-26T04:03:33Z","2026-10-26T04:03:41Z","2026-10-26T04:03:53Z","2026-10-26T04:04:11Z","2026-10-26T04:04:23Z","2026-10-26T04:04:37Z","2026-10-26T04:04:47Z","2026-10-26T04:04:55Z","2026-10-26T04:05:05Z","2026-10-26T04:05:15Z","2026-10-26T04:05:33Z","2026-10-26T04:05:57Z","2026-10-26T04:06:09Z","2026-10-26T04:06:21Z","2026-10-26T04:06:39Z","2026-10-26T04:06:53Z","2026-10-26T04:07:07Z","2026-10-26T04:07:15Z","2026-10-26T04:07:27Z","2026-10-26T04:07:35Z","2026-10-26T04:08:03Z","2026-10-26T04:08:08Z","2026-10-26T04:08:17Z","2026-10-26T04:08:26Z","2026-10-26T04:08:34Z","2026-10-26T04:08:40Z","2026-10-26T04:08:46Z","2026-10-26T04:08:56Z","2026-10-26T04:09:10Z","2026-10-26T04:09:14Z","2026-10-26T04:09:25Z","2026-10-26T04:10:05Z","2026-10-26T04:10:38Z","2026-10-26T04:10:46Z","2026-10-26T04:11:46Z","2026-10-26T04:12:12Z","2026-10-26T04:12:19Z"];
+let map = null;
+let lionPeak = null;
+let userLocationMarker = null;
+let amapApi = null;
+let resourcePointController = null;
+
+// The imported GPS data is WGS-84. AMap displays mainland China in GCJ-02,
+// so display coordinates are converted locally while the original track stays intact.
+function wgs84ToGcj02(lon, lat) {
+  const a = 6378245.0;
+  const ee = 0.006693421622965943;
+  const outOfChina = lon < 72.004 || lon > 137.8347 || lat < 0.8293 || lat > 55.8271;
+  if (outOfChina) return [lon, lat];
+  const transformLat = (x, y) => {
+    let ret = -100 + 2*x + 3*y + .2*y*y + .1*x*y + .2*Math.sqrt(Math.abs(x));
+    ret += (20*Math.sin(6*x*Math.PI) + 20*Math.sin(2*x*Math.PI))*2/3;
+    ret += (20*Math.sin(y*Math.PI) + 40*Math.sin(y/3*Math.PI))*2/3;
+    ret += (160*Math.sin(y/12*Math.PI) + 320*Math.sin(y*Math.PI/30))*2/3;
+    return ret;
+  };
+  const transformLon = (x, y) => {
+    let ret = 300 + x + 2*y + .1*x*x + .1*x*y + .1*Math.sqrt(Math.abs(x));
+    ret += (20*Math.sin(6*x*Math.PI) + 20*Math.sin(2*x*Math.PI))*2/3;
+    ret += (20*Math.sin(x*Math.PI) + 40*Math.sin(x/3*Math.PI))*2/3;
+    ret += (150*Math.sin(x/12*Math.PI) + 300*Math.sin(x/30*Math.PI))*2/3;
+    return ret;
+  };
+  let dLat = transformLat(lon - 105, lat - 35);
+  let dLon = transformLon(lon - 105, lat - 35);
+  const radLat = lat / 180 * Math.PI;
+  let magic = Math.sin(radLat);
+  magic = 1 - ee * magic * magic;
+  const sqrtMagic = Math.sqrt(magic);
+  dLat = dLat * 180 / ((a * (1-ee)) / (magic * sqrtMagic) * Math.PI);
+  dLon = dLon * 180 / (a / sqrtMagic * Math.cos(radLat) * Math.PI);
+  return [lon + dLon, lat + dLat];
+}
+const toAmapPoint = p => wgs84ToGcj02(p[1], p[0]);
+// 原始 GPS track 数据继续保留，但不绘制轨迹，也不显示起点或终点标记。
+// 用户新增地标：狮子峰（来自上传的 KML）
+const lionPeakInfo = `
+ <div class="edu-card">
+  <img src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=800&q=80" alt="山地森林生态景观示意图" loading="lazy">
+  <span class="edu-tag">自然教育点</span><span class="edu-tag">山地森林</span>
+  <h3>狮子峰 · 雾中寻塔</h3>
+  <p>狮子峰位于重庆北碚缙云山，是山地森林景观中的特色观景点。峰体岩石与周围林地形成鲜明对比；天气晴朗时视野开阔，湿润多雾时，山间景物又会变得朦胧，适合观察山地天气与能见度的变化。</p>
+  <div class="edu-section"><b>🌿 自然观察任务</b>
+   <p>① 看一看：观察裸露岩石与周围林地的交界，哪里更容易积水、长出苔藓？<br>② 听一听：安静停留 30 秒，记录听到的鸟鸣、昆虫声或风声。<br>③ 想一想：山顶风、光照和水分条件与林下有什么不同？这些差异会怎样影响植物生长？</p>
+  </div>
+  <div class="edu-section"><b>☁️ 云雾是怎样形成的？</b>
+   <img src="https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=800&q=80" alt="山地云雾景观示意图" loading="lazy" style="height:105px;margin-top:6px">
+   <p>空气里一直含有看不见的水汽。当湿润空气在夜间向地面散热，或沿山坡抬升后膨胀冷却，温度降到接近露点时，水汽会依附在空气中的微小颗粒上，凝结成许多细小水滴或冰晶。它们悬浮在近地面，就形成了雾；悬浮在较高处，则常被我们看作云。</p>
+   <div class="caption">图片为山地云雾示意图，并非狮子峰实景照片。</div>
+  </div>
+  <div class="edu-section"><b>🔭 为什么雾后的塔会若隐若现？</b>
+   <p>雾由大量微小水滴组成，会把光向不同方向散射，让远处物体与背景之间的明暗、颜色对比减弱。塔并不是忽然消失了，而是从塔反射到我们眼中的光变得更分散、对比度更低。山谷里的风会推动雾团移动，雾的厚薄也不断变化：雾薄时，塔的轮廓重新清晰；雾浓时，轮廓就像被轻轻擦去。</p>
+   <p><b>观察小实验：</b>在安全观景位置，比较近处树枝和远处建筑的清晰度。哪一个先变模糊？当雾变薄时，轮廓和颜色又是怎样恢复的？</p>
+  </div>
+  <div class="edu-section"><b>🥾 低影响徒步</b>
+   <p>沿开放步道行走，不翻越护栏、不攀爬脆弱岩壁；不采摘植物、不投喂野生动物，把垃圾带下山。拍照时注意脚下与边缘安全。</p>
+  </div>
+  <div class="edu-section" style="font-size:10px;color:#718077">坐标：29.840912, 106.391317<br>位置：重庆市北碚区缙云山景区附近</div>
+ </div>`;
+function updateLionGuide() {
+  document.getElementById('stepLabel').textContent = '自然教育点';
+  document.getElementById('guideText').innerHTML = `
+   <strong>狮子峰 · 雾中寻塔</strong>
+   <img src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=800&q=80" alt="山地森林生态景观示意图" style="width:100%;height:145px;object-fit:cover;border-radius:9px;margin:7px 0">
+   <b>认识地点：</b>狮子峰位于重庆北碚缙云山，岩石峰体与山地森林共同构成这里的景观。湿润天气里，山雾可能在山坡、林间和山谷间聚散，让同一处风景呈现出不同面貌。<br><br>
+   <b>雾从哪里来？</b>湿润空气冷却到接近露点时，水汽会在空气中的微小颗粒上凝结成细小水滴。它们悬浮在近地面，就形成雾。夜间地面散热、湿空气沿山坡上升，都可能促成这一过程。<br><br>
+   <b>为什么雾后的塔若隐若现？</b>雾滴会散射光线，削弱塔与背景之间的明暗和颜色对比，因此远处轮廓变得模糊。风推动雾团移动、雾层厚度发生变化时，塔就会在清晰与朦胧之间切换；它并没有消失，只是更难被看清。<br><br>
+   <b>自然观察任务：</b>在安全观景处比较近处树木和远处建筑的清晰度；观察雾变浓或变薄时，远景轮廓如何变化。也可以安静聆听 30 秒，记录一种自然声音。<br><br>
+   <b>保护行动：</b>沿开放步道行走，不采摘、不投喂、不留下垃圾；雾天能见度低，拍照时远离崖边，不为取景跨越护栏。<br><br>
+   <span style="color:#6d7c73;font-size:11px">坐标：29.840912, 106.391317<br>图片为自然景观示意图，并非狮子峰实景照片。</span>`;
+}
+
+let lionPeakWindow = null;
+let timer=null;
+function openLionGuide(){
+ if(!map || !lionPeak || !lionPeakWindow) return;
+ clearInterval(timer);
+ selectDestination({name:'狮子峰',position:toPositionArray(lionPeak.getPosition()),marker:lionPeak});
+ map.setZoomAndCenter(18,lionPeak.getPosition());
+ lionPeakWindow.open(map,lionPeak.getPosition());
+ document.getElementById('stepLabel').textContent='自然教育点';
+ document.getElementById('guideText').innerHTML='<strong>狮子峰 · 雾中寻塔</strong>点击地图上的狮子峰标记，阅读雾的形成、远处塔影若隐若现的原因，并完成一项自然观察任务。';
+}
+document.getElementById('startTour').onclick=openLionGuide;
+document.getElementById('focusLion').onclick=openLionGuide;
+document.getElementById('lionGuideItem').onclick=openLionGuide;
+document.getElementById('lionGuideItem').onkeydown=(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openLionGuide();}};
+function stopTour(){clearInterval(timer);timer=null;fitRouteAndLandmark();document.getElementById('stepLabel').textContent='步道概览';document.getElementById('guideText').innerHTML='<strong>欢迎来到缙云山自然导览</strong>沿步道探索山地森林与云雾景观。选择“狮子峰·雾中寻塔”即可打开自然教育名片。';}
+document.getElementById('stopTour').onclick=stopTour;
+function fitRouteAndLandmark(){
+ if(resourcePointController&&resourcePointController.visibleMarkers.length){resourcePointController.fitVisible();return;}
+ if(map&&lionPeak) map.setZoomAndCenter(17,lionPeak.getPosition());
+}
+document.getElementById('fit').onclick=fitRouteAndLandmark;
+document.getElementById('viewInternal').onclick=()=>{
+ document.getElementById('viewDaihu').click();
+ document.getElementById('resourceArea').value='缙云山国家级保护区内部区域';
+ document.getElementById('resourceArea').dispatchEvent(new Event('change'));
+};
+document.getElementById('viewDaihu').onclick=()=>{
+ document.getElementById('resourceArea').value='黛湖区域';
+ document.getElementById('resourceSearch').value='';
+ document.getElementById('resourceCategory').value='';
+ document.getElementById('toggleResources').checked=true;
+ document.getElementById('resourceNames').checked=true;
+ document.querySelector('.mapwrap').classList.remove('resource-names-off');
+ document.getElementById('resourceArea').dispatchEvent(new Event('change'));
+};
+
+function showMapError(message) {
+  const mapEl = document.getElementById('map');
+  document.getElementById('resourceCount').textContent='地图未加载，点位数据已保留';
+  document.getElementById('placesStatus').textContent='地图未加载，暂不能查询场馆';
+  mapEl.innerHTML = `<div style="height:100%;display:grid;place-items:center;padding:28px;text-align:center;color:#52675a;background:#eef4ee"><div><strong style="display:block;color:#173c2b;margin-bottom:8px">地图暂时无法载入</strong>${message}<br><button onclick="location.reload()" style="margin-top:16px;padding:9px 15px">重新加载地图</button></div></div>`;
+}
+
+if (!window.AMapLoader || !window.AMAP_CONFIG || !window.AMAP_CONFIG.key) {
+  showMapError('请确认 amap-config.js 与本文件位于同一文件夹，并已配置可用的高德 Web 端 JS API Key。');
+} else {
+  AMapLoader.load({
+    key: window.AMAP_CONFIG.key,
+    version: '2.0',
+    plugins: ['AMap.Scale','AMap.ToolBar','AMap.Walking']
+  }).then(AMap => {
+    amapApi = AMap;
+    const satelliteLayer = new AMap.TileLayer.Satellite();
+    const roadNetLayer = new AMap.TileLayer.RoadNet();
+    let satelliteMode = false;
+    map = new AMap.Map('map', {
+      viewMode: '2D',
+      zoom: 16,
+      center: toAmapPoint(track[0]),
+      mapStyle: 'amap://styles/normal',
+      features: ['bg', 'road', 'building', 'point'],
+      showLabel: true,
+      isHotspot: true,
+      resizeEnable: true
+    });
+    const standardLayers = map.getLayers().slice();
+    const updateNameDensity = () => document.querySelector('.mapwrap').classList.toggle('map-labels-compact', map.getZoom() < 17);
+    map.on('zoomend', updateNameDensity);
+    updateNameDensity();
+    map.addControl(new AMap.Scale());
+    map.addControl(new AMap.ToolBar({position:'LB'}));
+
+    const lionPosition = wgs84ToGcj02(106.39131671643784,29.84091248536153);
+    lionPeak = new AMap.Marker({
+      position: lionPosition,
+      title: '狮子峰 · 自然教育点',
+      content: window.MapPointUI.markerContent('狮子峰', 1, '#46784f', 'resource', window.JinyunGrades.get('DZ-001')),
+      offset: new AMap.Pixel(-window.JinyunGrades.size(1)/2,-window.JinyunGrades.size(1)/2),
+      zIndex: 150
+    });
+    lionPeakWindow = new AMap.InfoWindow({content:lionPeakInfo+window.MapPointUI.gradeDetails(window.JinyunGrades.get('DZ-001')),offset:new AMap.Pixel(0,-30),autoMove:true});
+    lionPeak.on('click',()=>{
+      ignoreMapClickUntil=Date.now()+350;
+      selectDestination({name:'狮子峰',position:lionPosition,marker:lionPeak});
+      lionPeakWindow.open(map,lionPosition);
+      updateLionGuide();
+    });
+    map.add(lionPeak);
+    resourcePointController=window.initializeResourcePoints({map,AMap,toAmapPoint,selectDestination,onGradeFilterChange:(level,visibleIDs)=>{if(visibleIDs.has('DZ-001'))map.add(lionPeak);else{map.remove(lionPeak);lionPeakWindow.close();}}});
+    try {
+      if (typeof window.initializeCourseRoutes === 'function') {
+        window.initializeCourseRoutes({map,AMap,toAmapPoint,selectDestination,resourcePointController});
+      } else {
+        console.warn('课程路线组件未成功加载，但资源地图可继续使用。');
+        document.getElementById('courseStatus').textContent='课程脚本未加载，其他地图功能不受影响。';
+      }
+    } catch (courseError) {
+      console.error('课程路线初始化失败：', courseError);
+      document.getElementById('courseStatus').textContent='课程模块暂不可用；资源地图可以正常使用。';
+    }
+    Object.entries(window.JINYUN_RESOURCE_MAJOR||{}).forEach(([name,color])=>{
+      const row=document.createElement('div');row.innerHTML=`<span class="dot" style="background:${color}"></span>${name}`;document.getElementById('majorLegend').append(row);
+    });
+
+    map.on('hotspotclick',event=>{
+      ignoreMapClickUntil=Date.now()+350;
+      selectDestination({name:event.name||'地图地点',position:toPositionArray(event.lnglat)});
+    });
+    map.on('click',event=>{
+      if(Date.now()<ignoreMapClickUntil) return;
+      selectDestination({name:'地图选点',position:toPositionArray(event.lnglat)});
+    });
+
+    document.getElementById('toggleBaseMap').onclick=()=>{
+      satelliteMode=!satelliteMode;
+      map.setLayers(satelliteMode?[satelliteLayer,roadNetLayer]:standardLayers);
+      document.getElementById('toggleBaseMap').textContent=satelliteMode?'切换标准':'切换卫星';
+    };
+    const requestedCategory = new URLSearchParams(location.search).get('category');
+    if(requestedCategory && Object.prototype.hasOwnProperty.call(window.JINYUN_RESOURCE_MAJOR,requestedCategory)){
+      document.getElementById('resourceCategory').value=requestedCategory;
+      document.getElementById('resourceCategory').dispatchEvent(new Event('change'));
+    }
+    const requestedID = new URLSearchParams(location.search).get('id');
+    if (requestedID) {
+      document.getElementById('resourceSearch').value=requestedID;
+      document.getElementById('resourceSearch').dispatchEvent(new Event('input'));
+    }
+    fitRouteAndLandmark();
+    window.initializeNearbyPlaces({map, AMap, toAmapPoint, selectDestination});
+  }).catch(error => {
+    console.error('地图载入或初始化失败:',error);
+    showMapError(window.mapScriptFailure ? '地图脚本下载失败（' + window.mapScriptFailure + '）。请检查网络连接后重试。' : '地图初始化未完成。请按 F12 查看控制台详细错误，确认是 API、网络还是页面组件异常。');
+  });
+}
+
+// Camera/photo preview for nature observation. The image stays in this page and is not uploaded.
+const naturePhotoInput = document.getElementById('naturePhoto');
+const naturePhotoPreview = document.getElementById('naturePhotoPreview');
+if (naturePhotoInput && naturePhotoPreview) {
+  naturePhotoInput.addEventListener('change', () => {
+    const file = naturePhotoInput.files && naturePhotoInput.files[0];
+    if (!file) { naturePhotoPreview.style.display = 'none'; return; }
+    const oldUrl = naturePhotoPreview.dataset.objectUrl;
+    if (oldUrl) URL.revokeObjectURL(oldUrl);
+    const url = URL.createObjectURL(file);
+    naturePhotoPreview.src = url;
+    naturePhotoPreview.dataset.objectUrl = url;
+    naturePhotoPreview.style.display = 'block';
+  });
+}
+
+// Generic destination selection and foreground, real-time walking navigation.
+let selectedDestination=null;
+let destinationSelectionMarker=null;
+let ignoreMapClickUntil=0;
+let userLocation=null;
+let walkingService=null;
+let walkingRouteLine=null;
+let navigationWatchId=null;
+let navigationActive=false;
+let routeRequestPending=false;
+let routeRequestSerial=0;
+let destinationRevision=0;
+let lastRouteOrigin=null;
+let lastRouteAt=0;
+let lastRoute=null;
+
+function setNavStatus(message){
+  const el=document.getElementById('navStatus');
+  if(el) el.textContent=message;
+}
+function toPositionArray(value){
+  if(Array.isArray(value)) return [Number(value[0]),Number(value[1])];
+  if(value&&typeof value.getLng==='function') return [value.getLng(),value.getLat()];
+  return [Number(value.lng),Number(value.lat)];
+}
+function distanceMeters(aLat,aLon,bLat,bLon){
+  const rad=x=>x*Math.PI/180;
+  const dLat=rad(bLat-aLat),dLon=rad(bLon-aLon);
+  const h=Math.sin(dLat/2)**2+Math.cos(rad(aLat))*Math.cos(rad(bLat))*Math.sin(dLon/2)**2;
+  return 6371000*2*Math.atan2(Math.sqrt(h),Math.sqrt(1-h));
+}
+function positionDistance(a,b){
+  const p1=toPositionArray(a),p2=toPositionArray(b);
+  return distanceMeters(p1[1],p1[0],p2[1],p2[0]);
+}
+function selectDestination({name,position,marker=null}){
+  const point=toPositionArray(position);
+  if(!Number.isFinite(point[0])||!Number.isFinite(point[1])) return;
+  if(navigationActive) stopRealtimeNavigation({announce:false});
+  clearWalkingRoute({announce:false});
+  if(map&&destinationSelectionMarker){map.remove(destinationSelectionMarker);destinationSelectionMarker=null;}
+  if(map&&!marker&&amapApi){
+    destinationSelectionMarker=new amapApi.Marker({
+      position:point,title:name||'导航目的地',
+      content:window.MapPointUI.markerContent(name||'导航目的地',1,'#567b65','resource'),offset:new amapApi.Pixel(-10,-10),zIndex:125
+    });
+    map.add(destinationSelectionMarker);
+  }
+  selectedDestination={name:name||'地图选点',position:point,marker};
+  destinationRevision+=1;
+  document.getElementById('selectedDestinationName').textContent=selectedDestination.name;
+  setNavStatus(`已选择“${selectedDestination.name}”。点击“开始实时导航”后将持续跟随位置。`);
+}
+function showUserLocationOnMap(currentPosition,focus){
+  if(!userLocationMarker){
+    userLocationMarker=new amapApi.CircleMarker({
+      center:currentPosition,radius:8,strokeColor:'#fff',strokeWeight:3,
+      fillColor:'#1878d1',fillOpacity:1,zIndex:140
+    });
+    const userWindow=new amapApi.InfoWindow({content:'你当前的位置',offset:new amapApi.Pixel(0,-9)});
+    userLocationMarker.on('click',()=>userWindow.open(map,userLocationMarker.getCenter()));
+    map.add(userLocationMarker);
+  }else{
+    userLocationMarker.setCenter(currentPosition);
+  }
+  if(focus) map.setZoomAndCenter(Math.max(map.getZoom(),16),currentPosition);
+}
+function geolocationErrorMessage(error){
+  return error.code===1?'你尚未授权定位。请在浏览器设置中允许位置权限。':
+         error.code===2?'暂时无法获取位置，请检查设备定位服务。':
+         '定位请求超时，请重试或使用外部高德导航。';
+}
+function locateCurrentPosition({focus=true,announce=true}={}){
+  return new Promise((resolve,reject)=>{
+    if(!map||!amapApi){const message='地图仍在载入，请稍后再试。';setNavStatus(message);reject(new Error(message));return;}
+    if(!navigator.geolocation){const message='当前浏览器不支持定位，请使用外部高德导航。';setNavStatus(message);reject(new Error(message));return;}
+    if(!window.isSecureContext){const message='实时定位需要通过 HTTPS 或 localhost 打开，不能直接使用 file://。';setNavStatus(message);reject(new Error(message));return;}
+    if(announce) setNavStatus('正在获取当前位置，请在浏览器提示中允许定位……');
+    navigator.geolocation.getCurrentPosition(pos=>{
+      userLocation={lat:pos.coords.latitude,lon:pos.coords.longitude,accuracy:pos.coords.accuracy};
+      const currentPosition=wgs84ToGcj02(userLocation.lon,userLocation.lat);
+      showUserLocationOnMap(currentPosition,focus);
+      if(announce){
+        const targetText=selectedDestination?`，距“${selectedDestination.name}”直线约 ${Math.round(positionDistance(currentPosition,selectedDestination.position))} 米`:'';
+        setNavStatus(`已定位，精度约 ${Math.round(userLocation.accuracy)} 米${targetText}。`);
+      }
+      resolve(currentPosition);
+    },error=>{const message=geolocationErrorMessage(error);setNavStatus(message);reject(new Error(message));},
+    {enableHighAccuracy:true,timeout:12000,maximumAge:10000});
+  });
+}
+function clearWalkingRoute({announce=true}={}){
+  if(map&&walkingRouteLine) map.remove(walkingRouteLine);
+  walkingRouteLine=null;lastRoute=null;lastRouteOrigin=null;lastRouteAt=0;
+  document.getElementById('routePanel').classList.remove('active');
+  document.getElementById('routeSummary').textContent='';
+  document.getElementById('liveInstruction').textContent='等待定位与路线指引';
+  document.getElementById('routeSteps').replaceChildren();
+  document.getElementById('clearRoute').disabled=true;
+  if(announce) setNavStatus('导航路线已清除。');
+}
+function renderWalkingRoute(route,{fit=false}={}){
+  const path=[];
+  (route.steps||[]).forEach(step=>(step.path||[]).forEach(point=>path.push(point)));
+  if(path.length<2) throw new Error('路线结果中没有可绘制的坐标。');
+  if(walkingRouteLine) map.remove(walkingRouteLine);
+  walkingRouteLine=new amapApi.Polyline({
+    path,isOutline:true,outlineColor:'#fff4df',borderWeight:2,
+    strokeWeight:7,strokeColor:'#f08a24',strokeOpacity:.95,
+    lineJoin:'round',lineCap:'round',zIndex:80
+  });
+  map.add(walkingRouteLine);
+  if(fit) map.setFitView([walkingRouteLine,userLocationMarker,selectedDestination.marker||destinationSelectionMarker].filter(Boolean),false,[50,50,50,50],17);
+  const distance=Number(route.distance)||0;
+  const seconds=Number(route.time||route.duration)||0;
+  const distanceText=distance>=1000?`${(distance/1000).toFixed(2)} 公里`:`${Math.round(distance)} 米`;
+  const timeText=seconds?`，预计 ${Math.max(1,Math.round(seconds/60))} 分钟`:'';
+  document.getElementById('routeSummary').textContent=`当前位置 → ${selectedDestination.name}：${distanceText}${timeText}`;
+  document.getElementById('liveInstruction').textContent=(route.steps&&route.steps[0]&&route.steps[0].instruction)||'沿地图中的橙色路线前进';
+  const stepsEl=document.getElementById('routeSteps');stepsEl.replaceChildren();
+  (route.steps||[]).forEach((step,index)=>{
+    const li=document.createElement('li');
+    li.textContent=step.instruction||`${step.orientation||''}沿${step.road||'当前道路'}步行 ${step.distance||''} 米`;
+    li.dataset.step=String(index+1);stepsEl.appendChild(li);
+  });
+  document.getElementById('routePanel').classList.add('active');
+  document.getElementById('clearRoute').disabled=false;
+}
+function planWalkingRoute(start,{fit=false}={}){
+  return new Promise((resolve,reject)=>{
+    if(!selectedDestination||routeRequestPending){reject(new Error('路线请求暂不可用'));return;}
+    routeRequestPending=true;
+    const requestId=++routeRequestSerial;
+    const targetRevision=destinationRevision;
+    walkingService=walkingService||new amapApi.Walking();
+    walkingService.search(start,selectedDestination.position,(status,result)=>{
+      if(requestId!==routeRequestSerial||targetRevision!==destinationRevision){reject(new Error('路线请求已过期'));return;}
+      routeRequestPending=false;
+      if(status==='complete'&&result.routes&&result.routes.length){
+        try{
+          lastRoute=result.routes[0];lastRouteOrigin=toPositionArray(start);lastRouteAt=Date.now();
+          renderWalkingRoute(lastRoute,{fit});resolve(lastRoute);
+        }catch(error){reject(error);}
+      }else{
+        console.error('Walking route failed:',status,result);reject(new Error('未能生成步行路线'));
+      }
+    });
+  });
+}
+async function handleLivePosition(pos){
+  if(!navigationActive||!selectedDestination) return;
+  userLocation={lat:pos.coords.latitude,lon:pos.coords.longitude,accuracy:pos.coords.accuracy};
+  const currentPosition=wgs84ToGcj02(userLocation.lon,userLocation.lat);
+  showUserLocationOnMap(currentPosition,true);
+  const directDistance=positionDistance(currentPosition,selectedDestination.position);
+  if(directDistance<=20){
+    document.getElementById('routePanel').classList.add('active');
+    document.getElementById('liveInstruction').textContent=`已到达 ${selectedDestination.name}`;
+    setNavStatus(`已到达“${selectedDestination.name}”附近。`);
+    stopRealtimeNavigation({announce:false});return;
+  }
+  const moved=!lastRouteOrigin||positionDistance(currentPosition,lastRouteOrigin)>=25;
+  const stale=Date.now()-lastRouteAt>=15000;
+  if(!routeRequestPending&&(!lastRoute||moved||stale)){
+    try{
+      await planWalkingRoute(currentPosition,{fit:!lastRoute});
+      if(navigationActive) setNavStatus(`实时导航中 · 定位精度约 ${Math.round(userLocation.accuracy)} 米 · 将持续更新路线。`);
+    }catch(error){
+      console.error(error);
+      if(navigationActive) setNavStatus('实时定位正常，但路线暂时无法更新；请留意现场道路。');
+    }
+  }else if(lastRoute){
+    document.getElementById('routeSummary').textContent=`当前位置 → ${selectedDestination.name}：直线约 ${Math.round(directDistance)} 米（路线自动更新中）`;
+  }
+}
+function startRealtimeNavigation(){
+  if(!selectedDestination){setNavStatus('请先点击地图标记、地点名称或地图任意位置选择目的地。');return;}
+  if(!map||!amapApi){setNavStatus('地图仍在载入，请稍后再试。');return;}
+  if(!navigator.geolocation){setNavStatus('当前浏览器不支持实时定位，请使用外部高德导航。');return;}
+  if(!window.isSecureContext){setNavStatus('实时导航需要通过 HTTPS 或 localhost 打开，不能直接使用 file://。');return;}
+  stopRealtimeNavigation({announce:false});
+  navigationActive=true;lastRoute=null;lastRouteOrigin=null;lastRouteAt=0;
+  document.getElementById('startRealtimeNav').disabled=true;
+  document.getElementById('stopRealtimeNav').disabled=false;
+  document.getElementById('routePanel').classList.add('active');
+  document.getElementById('liveInstruction').textContent='正在获取实时位置……';
+  setNavStatus('实时导航已启动，请允许定位并保持页面在前台打开。');
+  navigationWatchId=navigator.geolocation.watchPosition(handleLivePosition,error=>{
+    setNavStatus(geolocationErrorMessage(error));stopRealtimeNavigation({announce:false});
+  },{enableHighAccuracy:true,timeout:15000,maximumAge:3000});
+}
+function stopRealtimeNavigation({announce=true}={}){
+  if(navigationWatchId!==null&&navigator.geolocation){navigator.geolocation.clearWatch(navigationWatchId);}
+  navigationWatchId=null;navigationActive=false;routeRequestPending=false;routeRequestSerial+=1;
+  document.getElementById('startRealtimeNav').disabled=false;
+  document.getElementById('stopRealtimeNav').disabled=true;
+  if(announce) setNavStatus('实时导航已停止，当前路线保留在地图上。');
+}
+
+document.getElementById('locateMe').addEventListener('click',()=>locateCurrentPosition().catch(()=>{}));
+document.getElementById('startRealtimeNav').addEventListener('click',startRealtimeNavigation);
+document.getElementById('stopRealtimeNav').addEventListener('click',()=>stopRealtimeNavigation());
+document.getElementById('clearRoute').addEventListener('click',()=>{stopRealtimeNavigation({announce:false});clearWalkingRoute();});
+document.getElementById('openExternalNav').addEventListener('click',()=>{
+  if(!selectedDestination){setNavStatus('请先在地图上选择目的地。');return;}
+  const [lon,lat]=selectedDestination.position;
+  const url='https://uri.amap.com/navigation?to='+encodeURIComponent(`${lon},${lat},${selectedDestination.name}`)+
+    '&mode=walk&policy=1&src=JinyunshanNatureGuide';
+  window.open(url,'_blank','noopener,noreferrer');
+  setNavStatus(`已打开前往“${selectedDestination.name}”的外部高德导航。`);
+});
+
+</script>
+</body>
+</html>
