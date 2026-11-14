@@ -1,12 +1,165 @@
-(function(){
-const rs=window.JINYUN_RESOURCE_POINTS,cs=window.JINYUN_NATURE_COURSES,teaching=window.JINYUN_TEACHING;
-const groups=rs.map(r=>({r,activities:window.jinyunActivities(r),direction:window.jinyunActivityDirection(r)})).filter(g=>g.activities.length);
-const directionNames=Object.fromEntries(cs.map(c=>[c.id,c.title]));directionNames.support='场地服务与活动组织';
-const select=document.getElementById('activityDirection');for(const [id,name]of Object.entries(directionNames)){const o=document.createElement('option');o.value=id;o.textContent=name;select.append(o)}
-const params=new URLSearchParams(location.search);select.value=params.get('direction')||'';let limit=12;
-const allCount=groups.reduce((s,g)=>s+g.activities.length,0);window.jinyunActivityCoverage={resources:groups.length,activities:allCount};
-function renderIndex(){const q=document.getElementById('activitySearch').value.trim().toLowerCase();const filtered=groups.filter(g=>(!select.value||g.direction===select.value)&&[g.r.id,g.r.name,g.r.educationTheme,...g.activities.map(a=>a.text)].join(' ').toLowerCase().includes(q));document.getElementById('activityStats').textContent='已衔接 '+groups.length+' 个资源点的 '+allCount+' 个活动条目；当前匹配 '+filtered.length+' 个资源点。';const el=document.getElementById('activityIndex');el.className='activity-index';el.innerHTML=filtered.slice(0,limit).map(g=>'<a href="courses.html?resource='+encodeURIComponent(g.r.id)+'#activity-'+encodeURIComponent(g.r.id)+'-0" data-resource="'+esc(g.r.id)+'">'+esc(g.r.name)+'（'+esc(g.r.id)+'）<small>'+g.activities.length+' 个活动 · '+esc(directionNames[g.direction])+'</small></a>').join('')||'<p>未找到匹配资源。</p>';document.getElementById('activityMore').hidden=filtered.length<=limit;}
-function renderResource(id,hash,focus){const group=groups.find(g=>g.r.id===id);const el=document.getElementById('activityDetail');if(!group){el.innerHTML=id?'<p>此资源尚无可展开的活动条目。</p>':'';return}const r=group.r;const direction=group.direction;const note=teaching.notes[direction];const refKeys=note?.refs||[];el.innerHTML='<article class="activity-focus"><h3>'+esc(r.name)+' · 活动详解</h3><p>方向归组：'+esc(directionNames[direction])+'（仅用于检索）</p>'+(r.educationTheme?'<p>资料中的教育主题：'+esc(r.educationTheme)+'</p>':'')+'<a class="map-link" href="resources.html?resource='+encodeURIComponent(id)+'">返回此资源图鉴 ↗</a>'+group.activities.map(a=>{const g=window.jinyunActivityGuide(r,a);return '<section class="activity-example" id="'+esc(a.id)+'" tabindex="-1"><h4>'+esc(g.title)+'</h4><p>活动条目：'+esc(a.text)+'</p><p class="source-note">'+esc(g.kind)+'；资料不足处不作为现场已验证结论。</p><ol>'+g.steps.map(s=>'<li>'+esc(s)+'</li>').join('')+'</ol><p><b>材料：</b>'+esc(g.materials)+'</p><p><b>学习成果：</b>'+esc(g.output)+'</p>'+(r.audience?'<p>资料中的人群条件：'+esc(r.audience)+'</p>':'')+(r.season?'<p>资料中的季节条件：'+esc(r.season)+'</p>':'')+(r.safety?'<p>资料中的安全提示：'+esc(r.safety)+'</p>':'')+'</section>'}).join('')+(refKeys.length?'<p class="source-note reference-links">通用方法参考（并非各点位事实的证明）：'+refKeys.map(k=>{const s=teaching.refs[k];return '<a href="'+esc(s.url)+'" target="_blank" rel="noopener noreferrer">'+esc(s.name)+' ↗</a>'}).join('')+'</p>':'')+'<p class="source-note">现有资料中的时间、准入、人群和经营信息仍需实施前核实；未补写课程时长、接待量或未经核实的年龄结论。</p></article>';if(focus)requestAnimationFrame(()=>{const target=document.getElementById(hash)||el;target.scrollIntoView({block:'start'});target.focus?.({preventScroll:true})});}
-function loadSelection(){const q=new URLSearchParams(location.search);const hash=decodeURIComponent(location.hash.slice(1));const fromHash=hash.match(/^activity-(.+)-\d+$/)?.[1];renderResource(q.get('resource')||fromHash,hash,!!(q.get('resource')||fromHash));}
-document.getElementById('activityIndex').onclick=e=>{const a=e.target.closest('a[data-resource]');if(!a)return;e.preventDefault();history.pushState({},'',a.href);loadSelection()};document.getElementById('activityFilters').onsubmit=e=>e.preventDefault();document.getElementById('activityFilters').onreset=()=>{setTimeout(()=>{limit=12;renderIndex();document.getElementById('activityDetail').replaceChildren();history.replaceState({},'','courses.html#activityLibrary')},0)};document.getElementById('activitySearch').oninput=()=>{limit=12;renderIndex()};select.onchange=()=>{limit=12;renderIndex()};document.getElementById('activityMore').onclick=()=>{limit+=24;renderIndex()};window.addEventListener('popstate',loadSelection);window.addEventListener('hashchange',loadSelection);renderIndex();loadSelection();
+(function () {
+  const teaching = window.JINYUN_TEACHING;
+  const seasons = window.JINYUN_SEASONAL_COURSES.seasons;
+  const directionNames = Object.fromEntries(window.JINYUN_NATURE_COURSES.map(course => [course.id, course.title]));
+  directionNames.support = '场地服务与活动组织';
+
+  const groups = window.JINYUN_RESOURCE_POINTS.map(resource => ({
+    resource,
+    direction: window.jinyunActivityDirection(resource),
+    activities: window.jinyunActivities(resource).map(activity => ({
+      ...activity, timing: window.jinyunActivityTiming(resource, activity)
+    }))
+  })).filter(group => group.activities.length);
+  const allCount = groups.reduce((sum, group) => sum + group.activities.length, 0);
+  window.jinyunActivityCoverage = {resources: groups.length, activities: allCount};
+
+  const form = document.getElementById('activityFilters');
+  const direction = document.getElementById('activityDirection');
+  const search = document.getElementById('activitySearch');
+  const seasonInput = document.getElementById('activitySeason');
+  const index = document.getElementById('activityIndex');
+  const detail = document.getElementById('activityDetail');
+  const more = document.getElementById('activityMore');
+  const stats = document.getElementById('activityStats');
+  let limit = 12;
+  let visibleGroups = [];
+  let selectedId = '';
+
+  for (const [id, name] of Object.entries(directionNames)) direction.add(new Option(name, id));
+  seasonInput.innerHTML = [{id: '', name: '全部季节'}, ...seasons].map(season => {
+    const period = season.id === 'winter' ? '12月至次年2月' : season.months && season.months[0] + '—' + season.months.at(-1) + '月';
+    return `<label><input type="radio" name="activitySeason" value="${season.id}" ${season.id ? '' : 'checked'}>
+      <span>${season.name}${period ? '<small>' + period + '</small>' : ''}</span></label>`;
+  }).join('');
+
+  const currentSeason = () => seasonInput.querySelector('input:checked')?.value || '';
+
+  function timeLabel(timing, seasonId) {
+    if (!timing) return '适用时间待完善';
+    if (timing.yearRound) return '全年可开展';
+    const season = seasons.find(item => item.id === seasonId);
+    if (timing.months) {
+      const months = season ? season.months.filter(month => timing.months.includes(month)) : timing.months;
+      if (months.length > 1 && months.every((month, i) => !i || month === months[i - 1] % 12 + 1)) {
+        const first = months[0];
+        const last = months.at(-1);
+        return first > last ? first + '月至次年' + last + '月' : first + '—' + last + '月';
+      }
+      return months.join('、') + '月';
+    }
+    return season?.name || seasons.filter(item => timing.seasons.includes(item.id)).map(item => item.name).join('、');
+  }
+
+  function renderIndex() {
+    const query = search.value.trim().toLowerCase();
+    const season = currentSeason();
+    visibleGroups = groups.flatMap(group => {
+      if (direction.value && group.direction !== direction.value) return [];
+      const {resource} = group;
+      const matchesResource = [resource.id, resource.name, resource.educationTheme].join(' ').toLowerCase().includes(query);
+      const activities = group.activities.filter(activity => (!season || activity.timing?.seasons.includes(season))
+        && (matchesResource || activity.text.toLowerCase().includes(query)));
+      return activities.length ? [{...group, activities}] : [];
+    });
+    const matchCount = visibleGroups.reduce((sum, group) => sum + group.activities.length, 0);
+    stats.textContent = `已衔接 ${groups.length} 个资源点的 ${allCount} 个活动条目。当前匹配 ${visibleGroups.length} 个资源点、${matchCount} 个活动。`;
+    index.className = 'activity-index';
+    index.innerHTML = visibleGroups.slice(0, limit).map(({resource, activities, direction}) =>
+      `<a href="courses.html?resource=${encodeURIComponent(resource.id)}#${encodeURIComponent(activities[0].id)}"
+        data-resource="${esc(resource.id)}">${esc(resource.name)}（${esc(resource.id)}）
+        <small>${activities.length} 个活动 · ${esc(directionNames[direction])}</small></a>`
+    ).join('') || (season
+      ? '<p>本季暂无匹配活动。<button type="button" data-all-seasons>查看全部季节</button></p>'
+      : '<p>未找到匹配资源。</p>');
+    more.hidden = visibleGroups.length <= limit;
+  }
+
+  function renderResource(id, anchor = '', focus = false) {
+    const group = visibleGroups.find(item => item.resource.id === id);
+    if (!group) {
+      detail.replaceChildren();
+      return;
+    }
+    const {resource, activities} = group;
+    const refs = (teaching.notes[group.direction]?.refs || []).map(key => teaching.refs[key]);
+    detail.innerHTML = `<article class="activity-focus">
+      <h3>${esc(resource.name)} · 活动详解</h3>
+      <p>方向归组：${esc(directionNames[group.direction])}（仅用于检索）</p>
+      ${resource.educationTheme ? '<p>资料中的教育主题：' + esc(resource.educationTheme) + '</p>' : ''}
+      <a class="map-link" href="resources.html?resource=${encodeURIComponent(id)}">查看资源图鉴 ↗</a>
+      ${activities.map(activity => {
+        const guide = window.jinyunActivityGuide(resource, activity);
+        return `<section class="activity-example" id="${esc(activity.id)}" tabindex="-1">
+          <h4>${esc(guide.title)}</h4><p>活动条目：${esc(activity.text)}</p>
+          <p class="source-note">${esc(guide.kind)}。资料不足处留待核实。</p>
+          <p><strong>适用时间</strong> · ${esc(timeLabel(activity.timing, currentSeason()))}</p>
+          ${activity.timing ? '<p class="source-note">时间依据 · ' + esc(activity.timing.source) + '「' + esc(activity.timing.raw) + '」</p>' : ''}
+          <ol>${guide.steps.map(step => '<li>' + esc(step) + '</li>').join('')}</ol>
+          <p><b>材料：</b>${esc(guide.materials)}</p><p><b>学习成果：</b>${esc(guide.output)}</p>
+          ${resource.audience ? '<p>资料中的人群条件：' + esc(resource.audience) + '</p>' : ''}
+          ${resource.season && resource.season !== activity.timing?.raw ? '<p>资源记录中的时间条件：' + esc(resource.season) + '</p>' : ''}
+          ${resource.safety ? '<p>资料中的安全提示：' + esc(resource.safety) + '</p>' : ''}
+        </section>`;
+      }).join('')}
+      ${refs.length ? '<p class="source-note reference-links">通用方法参考 ' + refs.map(ref =>
+        `<a href="${esc(ref.url)}" target="_blank" rel="noopener noreferrer">${esc(ref.name)} ↗</a>`).join('') + '</p>' : ''}
+      <p class="source-note">开展前请核对资料中的时间、人群和准入条件。</p>
+    </article>`;
+    if (focus) requestAnimationFrame(() => {
+      const target = document.getElementById(anchor) || detail;
+      target.scrollIntoView({block: 'start'});
+      target.focus({preventScroll: true});
+    });
+  }
+
+  function applyFilters() {
+    limit = 12;
+    renderIndex();
+    renderResource(selectedId);
+  }
+
+  function restoreLink() {
+    if (location.hash.startsWith('#catalog?')) return;
+    const query = new URLSearchParams(location.search);
+    const hash = location.hash.slice(1);
+    const id = query.get('resource') || hash.match(/^activity-(.+)-\d+$/)?.[1];
+    if (!id && !query.has('direction')) return;
+    direction.value = Object.hasOwn(directionNames, query.get('direction')) ? query.get('direction') : '';
+    search.value = '';
+    seasonInput.querySelector('input[value=""]').checked = true;
+    selectedId = id || '';
+    renderIndex();
+    renderResource(selectedId, hash, !!id);
+    if (!id && hash === 'activityLibrary') requestAnimationFrame(() => document.getElementById('activityLibrary').scrollIntoView());
+  }
+
+  index.addEventListener('click', event => {
+    if (event.target.closest('[data-all-seasons]')) {
+      seasonInput.querySelector('input[value=""]').checked = true;
+      applyFilters();
+      return;
+    }
+    const link = event.target.closest('a[data-resource]');
+    if (!link || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    selectedId = link.dataset.resource;
+    renderResource(selectedId, link.hash.slice(1), true);
+  });
+  form.addEventListener('submit', event => event.preventDefault());
+  form.addEventListener('reset', () => setTimeout(() => {
+    selectedId = '';
+    applyFilters();
+  }, 0));
+  search.addEventListener('input', applyFilters);
+  direction.addEventListener('change', applyFilters);
+  seasonInput.addEventListener('change', applyFilters);
+  more.addEventListener('click', () => {
+    limit += 24;
+    renderIndex();
+  });
+  window.addEventListener('popstate', restoreLink);
+  window.addEventListener('hashchange', restoreLink);
+  renderIndex();
+  restoreLink();
 })();

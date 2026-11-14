@@ -1,0 +1,91 @@
+.course-catalog { margin: 4px 0 28px; }
+.course-catalog h2 { font-size: clamp(23px, 4vw, 31px); margin: 12px 0 8px; }
+.catalog-intro { color: #526b5c; line-height: 1.75; margin: 0 0 16px; }
+.catalog-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.category-card, .lesson-card, .lesson-version {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  padding: 19px 20px;
+  overflow-wrap: anywhere;
+}
+.category-card { position: relative; padding-right: 42px; }
+.category-card:hover { border-color: #74a78a; background: #f0f7ee; }
+.category-card h3, .lesson-card h3 { margin: 0 0 8px; font-size: 18px; }
+.category-card p, .lesson-card p { margin: 6px 0; line-height: 1.6; }
+.category-card small { color: #3d6b52; }
+.catalog-arrow { position: absolute; right: 19px; top: 20px; color: var(--green); }
+.catalog-breadcrumb, .catalog-other, .category-resources { font-size: 14px; }
+.catalog-breadcrumb a, .catalog-other a, .category-resources a, .empty-note a {
+  color: #21613f;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.catalog-other, .category-resources { display: flex; gap: 8px 20px; flex-wrap: wrap; margin-top: 20px; }
+.course-times { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0 18px; }
+.course-times a {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid #cadccf;
+  background: #fff;
+  border-radius: 9px;
+  font-size: 14px;
+}
+.course-times a[aria-current="page"] { background: #21613f; color: #fff; border-color: #21613f; }
+.course-times small { font-size: 12px; }
+.course-result-count { color: #526b5c; font-size: 13px; }
+.lesson-card .course-time { color: #21613f; font-size: 13px; font-weight: 650; margin: 0 0 8px; }
+.lesson-version { margin: 14px 0; }
+.lesson-version h3 { margin: 0 0 12px; }
+.lesson-version h4 { margin: 16px 0 6px; }
+.lesson-version p, .lesson-version ul { line-height: 1.75; margin: 6px 0; }
+.lesson-version ul { padding-left: 22px; }
+.lesson-evidence { margin-top: 14px; background: #f0f6ee; border-radius: 8px; padding: 9px 12px; }
+.activity-season-filter { flex-basis: 100%; min-width: 0; margin: 0; padding: 4px 0 0; border: 0; }
+.activity-season-filter legend { padding: 0; font-size: 14px; font-weight: 650; }
+.activity-season-options { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.activity-season-options label {
+  display: inline-flex; align-items: center; gap: 5px; min-height: 44px;
+  padding: 5px 10px; background: #fff; border: 1px solid var(--line); border-radius: 8px; cursor: pointer;
+}
+.activity-season-options label:has(:checked) { border-color: #19734e; background: #eaf2e5; }
+.activity-season-options input[type="radio"] { flex: none; min-width: auto; margin: 0; accent-color: #19734e; }
+.activity-season-options small { display: block; color: #526b5c; font-size: 11px; }
+.category-content { margin-top: 28px; scroll-margin-top: 15px; }
+.category-overview, .lesson-detail {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  padding: 18px 20px;
+}
+.category-overview h3 { margin: 4px 0 10px; }
+.category-overview p, .lesson-detail > p { line-height: 1.75; }
+.lesson-detail { grid-column: 1 / -1; scroll-margin-top: 15px; }
+.lesson-detail > h3 { font-size: 21px; margin: 0 0 8px; }
+.course-catalog .course-point-list { list-style: none; margin: 0 0 18px; padding: 0; }
+.course-point { border-bottom: 1px solid var(--line); padding: 8px 0; }
+.course-point > summary, .inline-course-map > summary {
+  color: #21613f;
+  cursor: pointer;
+  padding: 4px 0;
+}
+.course-point dl { margin: 10px 0; }
+.course-point dt { font-weight: 650; margin-top: 9px; }
+.course-point dd { margin: 3px 0 0; line-height: 1.7; white-space: pre-wrap; overflow-wrap: anywhere; }
+.inline-course-map { margin: 12px 0; }
+.inline-course-map a { color: #21613f; text-decoration: underline; }
+.course-map-frame iframe {
+  display: block; width: 100%; height: min(76vh, 740px); min-height: 440px;
+  border: 1px solid var(--line); border-radius: 9px; margin: 6px 0;
+}
+.category-resources button { color: #21613f; background: #eaf2e5; border: 0; border-radius: 8px; padding: 10px 14px; }
+@media (max-width: 650px) {
+  .catalog-grid { grid-template-columns: minmax(0, 1fr); }
+  .category-card, .lesson-card, .lesson-version { padding: 15px 16px; }
+  .category-card { padding-right: 40px; }
+  .course-times a { flex-wrap: wrap; gap: 3px 5px; }
+  .category-overview, .lesson-detail { padding: 13px; }
+}

@@ -158,9 +158,18 @@ footer{font-size:10px;color:var(--muted);line-height:1.5;padding:0 3px 12px}
  </section>
 
  <section class="card">
-  <div class="sectionhead"><h3>导览路线</h3><span>步道概览</span></div>
+  <div class="sectionhead"><h3>导览路线</h3><span>4 处导览点</span></div>
   <div class="stop stop-featured" id="lionGuideItem" role="button" tabindex="0">
    <div class="num">✦</div><div><b>狮子峰 · 雾中寻塔</b><small>自然教育点 · 认识雾的形成与远景变化</small></div><div class="jump">›</div>
+  </div>
+  <div class="stop stop-featured" id="xiangluGuideItem" role="button" tabindex="0">
+   <div class="num">✦</div><div><b>香炉峰 · 晨光观云</b><small>山峰观景点 · 观察日出、云层与山脊轮廓</small></div><div class="jump">›</div>
+  </div>
+  <div class="stop stop-featured" id="foguangGuideItem" role="button" tabindex="0">
+   <div class="num">✦</div><div><b>佛光岩 · 岩壁寻光</b><small>地质观察点 · 认识岩壁、光影与风化痕迹</small></div><div class="jump">›</div>
+  </div>
+  <div class="stop stop-featured" id="jinyunTempleGuideItem" role="button" tabindex="0">
+   <div class="num">✦</div><div><b>缙云寺 · 古刹寻迹</b><small>人文教育点 · 观察古建与山地环境的关系</small></div><div class="jump">›</div>
   </div>
  </section>
  <section class="card">
@@ -269,6 +278,60 @@ const lionPeakInfo = `
   </div>
   <div class="edu-section" style="font-size:10px;color:#718077">坐标：29.840912, 106.391317<br>位置：重庆市北碚区缙云山景区附近</div>
  </div>`;
+const nearbyGuideSpecs = [
+ {
+  id:'xianglu', itemId:'xiangluGuideItem', name:'香炉峰', title:'香炉峰 · 晨光观云',
+  position:[106.39226,29.84162], tags:['山峰观景点','云海与日出'],
+  summary:'香炉峰与狮子峰相邻，是缙云山九峰之一，也是观察日出、云层移动和山脊轮廓的代表性位置。天气和能见度变化较快，适合比较不同时段的光线与远景。',
+  task:'面向东方观察天空由暗到亮时颜色的变化；辨认近处树冠、中景山脊与远景城市三层轮廓，并记录哪一层最先变清晰。',
+  topic:'低角度阳光穿过的大气路径更长，短波光更容易被散射，因此清晨天空常出现由冷色到暖色的变化。云层高度、厚度与风向也会改变日出时看到的光影。',
+  action:'在开放观景区域停留，不翻越护栏；清晨光线弱、石阶湿滑，应使用照明并与崖边保持距离。',
+  coordinate:'29.841620, 106.392260'
+ },
+ {
+  id:'foguang', itemId:'foguangGuideItem', name:'佛光岩', title:'佛光岩 · 岩壁寻光',
+  position:[106.39292,29.84184], tags:['地质观察点','岩壁与光影'],
+  summary:'佛光岩位于狮子峰附近，是缙云山具有代表性的岩壁景观。裸露岩面、裂隙与周边植被形成鲜明边界，可用于观察岩石风化、微生境和光照差异。',
+  task:'从安全位置寻找岩壁上的颜色、纹理和裂隙，比较向阳面与背阴面是否有不同的苔藓或地衣覆盖；不触碰、不剥取岩面生物。',
+  topic:'岩石表面受到水分、温度变化和生物活动影响，会逐渐产生裂隙与风化痕迹。不同朝向接受的阳光和水分不同，也会形成不一样的微生境。',
+  action:'只在开放步道和观景位置观察，不攀爬岩壁、不敲击或带走岩石；雨后岩面湿滑，应特别注意脚下安全。',
+  coordinate:'29.841840, 106.392920'
+ },
+ {
+  id:'jinyun-temple', itemId:'jinyunTempleGuideItem', name:'缙云寺', title:'缙云寺 · 古刹寻迹',
+  position:[106.39194889,29.83861694], tags:['人文教育点','古建与森林'],
+  summary:'缙云寺坐落在缙云山林地之中，始建于南朝刘宋景平元年，是缙云山重要的人文景观。古建筑、石刻、院落植物与山地环境共同构成可观察的文化景观。',
+  task:'观察建筑选址与坡地、林木、道路的关系，找一处能体现自然材料或传统营造方式的细节，用文字或速写记录下来。',
+  topic:'山地寺院的选址、院落布局和建筑材料既回应地形与气候，也承载长期的人文活动。自然环境与文化遗产并不是彼此分离的两类资源。',
+  action:'保持安静，遵守场所开放与参观规定；不触摸石刻和古建构件，不在禁火区域使用明火，拍摄前留意现场提示。',
+  coordinate:'29.838617, 106.391949'
+ }
+];
+function nearbyGuideInfo(spec){
+ return `<div class="edu-card">
+  <img src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=800&q=80" alt="缙云山森林景观示意图" loading="lazy">
+  ${spec.tags.map(tag=>`<span class="edu-tag">${tag}</span>`).join('')}
+  <h3>${spec.title}</h3><p>${spec.summary}</p>
+  <div class="edu-section"><b>🌿 自然观察任务</b><p>${spec.task}</p></div>
+  <div class="edu-section"><b>⌁ 观察知识</b><p>${spec.topic}</p></div>
+  <div class="edu-section"><b>🥾 低影响参观</b><p>${spec.action}</p></div>
+  <div class="edu-section" style="font-size:10px;color:#718077">坐标：${spec.coordinate}<br>图片为缙云山森林景观示意图，并非该景点实景照片。</div>
+ </div>`;
+}
+const nearbyGuideMarkers=[];
+let nearbyGuideWindow=null;
+function openNearbyGuide(spec){
+ const marker=nearbyGuideMarkers.find(item=>item.spec.id===spec.id);
+ if(!map||!marker||!nearbyGuideWindow)return;
+ clearInterval(timer);
+ const position=toPositionArray(marker.marker.getPosition());
+ selectDestination({name:spec.name,position,marker:marker.marker});
+ map.setZoomAndCenter(18,marker.marker.getPosition());
+ nearbyGuideWindow.setContent(nearbyGuideInfo(spec));
+ nearbyGuideWindow.open(map,marker.marker.getPosition());
+ document.getElementById('stepLabel').textContent='自然教育点';
+ document.getElementById('guideText').innerHTML=`<strong>${spec.title}</strong>${spec.summary}<br><br><b>观察任务：</b>${spec.task}<br><br><b>保护行动：</b>${spec.action}`;
+}
 function updateLionGuide() {
   document.getElementById('stepLabel').textContent = '自然教育点';
   document.getElementById('guideText').innerHTML = `
@@ -297,9 +360,15 @@ document.getElementById('startTour').onclick=openLionGuide;
 document.getElementById('focusLion').onclick=openLionGuide;
 document.getElementById('lionGuideItem').onclick=openLionGuide;
 document.getElementById('lionGuideItem').onkeydown=(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openLionGuide();}};
+nearbyGuideSpecs.forEach(spec=>{
+ const item=document.getElementById(spec.itemId);
+ item.onclick=()=>openNearbyGuide(spec);
+ item.onkeydown=(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openNearbyGuide(spec);}};
+});
 function stopTour(){clearInterval(timer);timer=null;fitRouteAndLandmark();document.getElementById('stepLabel').textContent='步道概览';document.getElementById('guideText').innerHTML='<strong>欢迎来到缙云山自然导览</strong>沿步道探索山地森林与云雾景观。选择“狮子峰·雾中寻塔”即可打开自然教育名片。';}
 document.getElementById('stopTour').onclick=stopTour;
 function fitRouteAndLandmark(){
+ if(map&&nearbyGuideMarkers.length){map.setFitView([lionPeak,...nearbyGuideMarkers.map(item=>item.marker)],false,[70,70,70,70],17);return;}
  if(resourcePointController&&resourcePointController.visibleMarkers.length){resourcePointController.fitVisible();return;}
  if(map&&lionPeak) map.setZoomAndCenter(17,lionPeak.getPosition());
 }
@@ -319,11 +388,30 @@ document.getElementById('viewDaihu').onclick=()=>{
  document.getElementById('resourceArea').dispatchEvent(new Event('change'));
 };
 
+const mapQuery = new URLSearchParams(location.search);
+const coursePointIds = new Set((mapQuery.get('points') || '').split(',').filter(Boolean));
+const requestedCoursePoints = (window.JINYUN_RESOURCE_POINTS || []).filter(item => coursePointIds.has(item.id));
+
 function showMapError(message) {
   const mapEl = document.getElementById('map');
   document.getElementById('resourceCount').textContent='地图未加载，点位数据已保留';
   document.getElementById('placesStatus').textContent='地图未加载，暂不能查询场馆';
   mapEl.innerHTML = `<div style="height:100%;display:grid;place-items:center;padding:28px;text-align:center;color:#52675a;background:#eef4ee"><div><strong style="display:block;color:#173c2b;margin-bottom:8px">地图暂时无法载入</strong>${message}<br><button onclick="location.reload()" style="margin-top:16px;padding:9px 15px">重新加载地图</button></div></div>`;
+  if (requestedCoursePoints.length) {
+    const panel = mapEl.firstElementChild.firstElementChild;
+    const heading = document.createElement('p');
+    heading.textContent = '本课程关联资源';
+    const list = document.createElement('ul');
+    requestedCoursePoints.forEach(item => {
+      const row = document.createElement('li');
+      const link = document.createElement('a');
+      link.href = 'resources.html?resource=' + encodeURIComponent(item.id);
+      link.textContent = item.name + '（' + item.id + '）';
+      row.append(link);
+      list.append(row);
+    });
+    panel.append(heading, list);
+  }
 }
 
 if (!window.AMapLoader || !window.AMAP_CONFIG || !window.AMAP_CONFIG.key) {
@@ -371,6 +459,19 @@ if (!window.AMapLoader || !window.AMAP_CONFIG || !window.AMAP_CONFIG.key) {
       updateLionGuide();
     });
     map.add(lionPeak);
+    nearbyGuideWindow = new AMap.InfoWindow({offset:new AMap.Pixel(0,-30),autoMove:true});
+    nearbyGuideSpecs.forEach(spec=>{
+      const marker=new AMap.Marker({
+        position:wgs84ToGcj02(spec.position[0],spec.position[1]),
+        title:spec.title,
+        content:window.MapPointUI.markerContent(spec.name,1,'#46784f','resource'),
+        offset:new AMap.Pixel(-window.JinyunGrades.size(1)/2,-window.JinyunGrades.size(1)/2),
+        zIndex:149
+      });
+      marker.on('click',()=>{ignoreMapClickUntil=Date.now()+350;openNearbyGuide(spec);});
+      nearbyGuideMarkers.push({spec,marker});
+      map.add(marker);
+    });
     resourcePointController=window.initializeResourcePoints({map,AMap,toAmapPoint,selectDestination,onGradeFilterChange:(level,visibleIDs)=>{if(visibleIDs.has('DZ-001'))map.add(lionPeak);else{map.remove(lionPeak);lionPeakWindow.close();}}});
     try {
       if (typeof window.initializeCourseRoutes === 'function') {
@@ -406,12 +507,14 @@ if (!window.AMapLoader || !window.AMAP_CONFIG || !window.AMAP_CONFIG.key) {
       document.getElementById('resourceCategory').value=requestedCategory;
       document.getElementById('resourceCategory').dispatchEvent(new Event('change'));
     }
-    const requestedID = new URLSearchParams(location.search).get('id');
-    if (requestedID) {
-      document.getElementById('resourceSearch').value=requestedID;
-      document.getElementById('resourceSearch').dispatchEvent(new Event('input'));
+    const requestedID = mapQuery.get('id');
+    if (requestedCoursePoints.length) {
+      resourcePointController.showCoursePoints(requestedCoursePoints.map(item => item.id));
+    } else if (requestedID && resourcePointController.showResource(requestedID)) {
+      // The selected resource already set the map view and opened its details.
+    } else if (!document.getElementById('natureCourse').value) {
+      fitRouteAndLandmark();
     }
-    fitRouteAndLandmark();
     window.initializeNearbyPlaces({map, AMap, toAmapPoint, selectDestination});
   }).catch(error => {
     console.error('地图载入或初始化失败:',error);

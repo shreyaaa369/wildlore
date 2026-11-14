@@ -145,6 +145,7 @@
     const countEl = document.getElementById("resourceCount");
     const areaSelect = document.getElementById("resourceArea");
     const visibility = document.getElementById("toggleResources");
+    let coursePoints = null;
     document.getElementById("resourceNames").addEventListener("change", event => {
       document.querySelector('.mapwrap').classList.toggle('resource-names-off', !event.target.checked);
     });
@@ -171,7 +172,8 @@
           const matchesQuery = !query || item._searchText.includes(query);
           const matchesArea = !areaSelect.value || item.area === areaSelect.value;
           const matchesGrade=!selectedGrade || String(window.JinyunGrades?.get(item)?.level)===selectedGrade;
-          return matchesCategory && matchesQuery && matchesArea && matchesRepresentative && matchesGrade;
+          return matchesCategory && matchesQuery && matchesArea && matchesGrade
+            && (coursePoints ? coursePoints.has(item.id) : matchesRepresentative);
         }));
         if(previousIDs!==entry.visibleItems.map(x=>x.id).join())entry.infoWindow.close();
         const shouldShow = visibility.checked && entry.visibleItems.length > 0;
@@ -191,7 +193,7 @@
         }
       });
 
-      countEl.textContent = `当前 ${visibleRecordCount} 项 / ${visiblePointCount} 个位置（全库 ${source.length} 项）`;
+      countEl.textContent = `${coursePoints ? '课程点位 · ' : ''}当前 ${visibleRecordCount} 项 / ${visiblePointCount} 个位置（全库 ${source.length} 项）`;
       const gradeStatus=document.getElementById('gradeStatus');
       if(gradeStatus)gradeStatus.textContent=(selectedGrade?['','一级核心典型','二级特色代表','三级普通基础'][Number(selectedGrade)]:'全部等级')+' · 当前显示 '+visibleRecordCount+' 项资源';
       options.onGradeFilterChange?.(selectedGrade,new Set(entries.filter(e=>e.visible).flatMap(e=>e.visibleItems.map(x=>x.id))));
@@ -199,9 +201,9 @@
 
     document.querySelectorAll('input[name="resourceGrade"]').forEach(input=>input.addEventListener('change',()=>{representativeOnly.checked=false;applyFilter();fitVisible();}));
     representativeOnly.addEventListener("change", applyFilter);
-    searchInput.addEventListener("input", applyFilter);
-    categorySelect.addEventListener("change", applyFilter);
-    areaSelect.addEventListener("change", () => { applyFilter(); fitVisible(); });
+    searchInput.addEventListener("input", () => { coursePoints = null; applyFilter(); });
+    categorySelect.addEventListener("change", () => { coursePoints = null; applyFilter(); });
+    areaSelect.addEventListener("change", () => { coursePoints = null; applyFilter(); fitVisible(); });
     visibility.addEventListener("change", applyFilter);
     document.getElementById("clearResourceFilter").addEventListener("click", () => {
       document.querySelector('input[name="resourceGrade"][value=""]').checked=true;
@@ -210,6 +212,7 @@
       areaSelect.value = "";
       visibility.checked = true;
       representativeOnly.checked = true;
+      coursePoints = null;
       applyFilter();
       fitVisible();
     });
@@ -228,10 +231,22 @@
         return entries.filter((entry) => entry.visible).map((entry) => entry.marker);
       },
       fitVisible,
+      showCoursePoints(ids) {
+        coursePoints = new Set(ids);
+        document.querySelector('input[name="resourceGrade"][value=""]').checked = true;
+        representativeOnly.checked = false;
+        visibility.checked = true;
+        categorySelect.value = '';
+        areaSelect.value = '';
+        searchInput.value = '';
+        applyFilter();
+        fitVisible();
+      },
       showResource(id) {
         const entry=entries.find(e=>e.items.some(x=>x.id===id));
         if(!entry)return false;
         const item=entry.items.find(x=>x.id===id);
+        coursePoints = null;
         document.querySelector('input[name="resourceGrade"][value=""]').checked=true;
         representativeOnly.checked=false;visibility.checked=true;
         categorySelect.value='';areaSelect.value='';searchInput.value=id;applyFilter();
